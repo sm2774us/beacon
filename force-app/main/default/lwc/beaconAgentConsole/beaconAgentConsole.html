@@ -1,0 +1,22 @@
+<template>
+    <div class="slds-box slds-m-bottom_medium">
+        <p class="slds-text-heading_small slds-m-bottom_x-small">Beacon Agent Console <span class="slds-badge">no Agentforce licence needed</span></p>
+        <div class="slds-scrollable_y" style="max-height: 280px">
+            <template for:each={messages} for:item="m">
+                <div key={m.id} class="slds-m-bottom_small">
+                    <p><b>{m.who}:</b> {m.text}</p>
+                    <template for:each={m.steps} for:item="s">
+                        <p key={s} class="slds-text-color_weak slds-text-body_small slds-p-left_medium">&#9656; {s}</p>
+                    </template>
+                </div>
+            </template>
+        </div>
+        <div class="slds-m-vertical_x-small">
+            <template for:each={quick} for:item="q">
+                <lightning-button key={q} label={q} variant="neutral" class="slds-m-right_x-small" onclick={handleQuick} data-q={q}></lightning-button>
+            </template>
+        </div>
+        <lightning-input type="text" label="Ask the agent" value={draft} onchange={handleChange} onkeyup={handleKey} placeholder='e.g. triage E-1002'></lightning-input>
+        <lightning-button variant="brand" label="Send" class="slds-m-top_x-small" onclick={handleSend} disabled={busy}></lightning-button>
+    </div>
+</template>

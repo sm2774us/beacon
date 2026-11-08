@@ -1,0 +1,24 @@
+<template>
+    <lightning-card title="Beacon - Agentic GRC Control Tower" icon-name="standard:einstein_replies">
+        <div slot="actions">
+            <lightning-button variant="brand" label="Run agent on new findings" onclick={handleRun} disabled={busy}></lightning-button>
+        </div>
+        <div class="slds-p-horizontal_medium">
+            <template if:true={error}><p class="slds-text-color_error">{error}</p></template>
+            <template if:true={kpi}>
+                <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_medium">
+                    <template for:each={tiles} for:item="t">
+                        <div key={t.label} class="slds-col slds-size_1-of-4 slds-m-bottom_small">
+                            <div class="slds-box slds-box_x-small">
+                                <p class="slds-text-heading_large">{t.value}</p>
+                                <p class="slds-text-color_weak">{t.label}</p>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+            <c-beacon-agent-console onagentdone={handleDone}></c-beacon-agent-console>
+            <lightning-datatable key-field="Id" data={rows} columns={columns} hide-checkbox-column></lightning-datatable>
+        </div>
+    </lightning-card>
+</template>

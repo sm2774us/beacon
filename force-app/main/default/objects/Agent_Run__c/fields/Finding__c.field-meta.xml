@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Finding__c</fullName>
+    <label>Finding</label>
+    <referenceTo>Finding__c</referenceTo>
+    <relationshipName>Agent_Runs</relationshipName>
+    <relationshipLabel>Agent Runs</relationshipLabel>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <type>Lookup</type>
+</CustomField>

@@ -1,0 +1,8 @@
+[{"name":"payroll-db","tier":1,"pii":true,"internet":false},
+{"name":"customer-portal-bucket","tier":1,"pii":true,"internet":true},
+{"name":"customer-portal","tier":1,"pii":true,"internet":true},
+{"name":"core-ledger","tier":1,"pii":true,"internet":false},
+{"name":"trading-api","tier":1,"pii":false,"internet":true},
+{"name":"mail-gateway","tier":2,"pii":false,"internet":true},
+{"name":"hr-wiki","tier":3,"pii":true,"internet":false},
+{"name":"dev-sandbox","tier":3,"pii":false,"internet":false}]

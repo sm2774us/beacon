@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Framework__c</fullName>
+    <label>Framework</label>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value><fullName>SOC2</fullName><default>false</default><label>SOC2</label></value>
+            <value><fullName>ISO27001</fullName><default>false</default><label>ISO27001</label></value>
+            <value><fullName>NIST CSF</fullName><default>false</default><label>NIST CSF</label></value>
+        </valueSetDefinition>
+    </valueSet>
+    <type>Picklist</type>
+</CustomField>

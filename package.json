@@ -1,0 +1,13 @@
+{
+  "name": "beacon-fde-control-tower",
+  "version": "1.0.0",
+  "description": "Agentic GRC Control Tower - Forward Deployed Engineer reference build (Salesforce Agentforce pattern)",
+  "license": "MIT",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node local/server.js",
+    "demo:cli": "node local/cli/demo.js",
+    "demo:cli:fast": "node local/cli/demo.js --fast",
+    "test": "node --test local/test/engine.test.js"
+  }
+}

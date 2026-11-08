@@ -1,0 +1,7 @@
+[{"code":"CC6.1","framework":"SOC2","name":"Logical Access Controls","owner":"Identity Team","criticality":10},
+{"code":"CC6.3","framework":"SOC2","name":"Role-Based Access","owner":"Platform Security","criticality":8},
+{"code":"CC6.6","framework":"SOC2","name":"Boundary Protection","owner":"Network Security","criticality":8},
+{"code":"CC7.1","framework":"SOC2","name":"Vulnerability & Threat Detection","owner":"SOC","criticality":7},
+{"code":"CC7.2","framework":"SOC2","name":"Security Event Monitoring","owner":"SOC","criticality":6},
+{"code":"CC8.1","framework":"SOC2","name":"Change Management","owner":"Release Eng","criticality":5},
+{"code":"CC1.4","framework":"SOC2","name":"Access Review Governance","owner":"GRC Office","criticality":3}]

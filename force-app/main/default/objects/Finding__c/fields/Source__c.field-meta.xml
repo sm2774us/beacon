@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Source__c</fullName>
+    <label>Source</label>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value><fullName>Splunk</fullName><default>false</default><label>Splunk</label></value>
+            <value><fullName>CloudTrail</fullName><default>false</default><label>CloudTrail</label></value>
+            <value><fullName>ServiceNow</fullName><default>false</default><label>ServiceNow</label></value>
+            <value><fullName>Archer</fullName><default>false</default><label>Archer</label></value>
+        </valueSetDefinition>
+    </valueSet>
+    <type>Picklist</type>
+</CustomField>
