@@ -2,3 +2,4 @@ node_modules/
 .sfdx/
 .sf/
 *.log
+.vscode

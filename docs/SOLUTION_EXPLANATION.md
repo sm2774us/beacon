@@ -847,6 +847,8 @@ Design point: runs are *append-only facts* separate from the finding, so a findi
 <a id="s13-14"></a>
 ### 13.14 `BeaconAgentController.cls` - the no-Agentforce agent
 
+**[force-app/main/default/classes/BeaconAgentController.cls](./sub-docs/force-app_main_default_classes/BeaconAgentController_cls.md)**
+
 > **In plain English:** The *chat translator*: turns a typed phrase such as "triage E-1002" into a call to the same tool, then explains the result.
 
 Intent parser for orgs without Agentforce: [regex](#g-regex) `(F-\d{5}|E-\d{4})` extracts a finding reference (matched by `Name` or `External_Id__c`), then keywords route to: `triage all|run all|all new` -> `triageNew`; `status|kpi|summary` -> KPI sentence; `approve|reject` -> only valid when `Status__c = 'Pending Approval'` (sets Approved/Rejected, clears `Requires_Approval__c`, and on reject zeroes `Minutes_Saved__c` and marks runs `Rejected`); `why|explain` -> **reads** the last run's guardrails without re-triaging; otherwise triage via the *same* action and return a five-line tool trace. The key interview point: the "agent" is a thin orchestrator; policy lives in the action, so swapping in an Agentforce topic changes nothing downstream. It is rule-based, not an [LLM](#g-llm), and says so in the UI badge.
