@@ -19,16 +19,20 @@ button.b{background:var(--blue);color:#04101f;border:0;border-radius:8px;padding
 svg text{fill:var(--tx);font-size:12px}
 </style></head><body>
 <header><div class="logo">B</div><div><h1>Beacon &mdash; Agentic GRC Control Tower</h1><small>Forward-deployed reference build &middot; Salesforce Agentforce pattern &middot; runs 100% locally</small></div>
-<div style="margin-left:auto;display:flex;gap:8px"><button class="b o" onclick="reset()">Reset demo</button></div></header>
+<div style="margin-left:auto;display:flex;gap:10px;align-items:center"><span id="mode" class="pill New">...</span><button class="b o" onclick="reset()">Reset demo</button></div></header>
 <nav id="nav"></nav><main id="main"></main>
 <script>
 const TABS=['Mission Control','Data Pipeline','Prompt Evals','ROI','Ambiguity vs Uncertainty','Architecture','Salesforce Mapping'];
-let S=null,tab=0,sel=null,prompt='v2',ev={};
+let S=null,tab=0,sel=null,prompt='v2',ev={},MODE=null,last='',err='';
 const $=(h)=>{const d=document.createElement('div');d.innerHTML=h;return d.firstElementChild};
 const api=async(u,m)=>(await fetch(u,{method:m||'GET'})).json();
 const pill=s=>`<span class="pill ${s}">${s}</span>`;
-async function load(){S=await api('/api/state');render()}
-async function reset(){S=await api('/api/reset','POST');sel=null;render()}
+async function load(){try{const m=await api('/api/mode');MODE=m;const el=document.getElementById('mode');
+if(m.mode==='salesforce'){el.className='pill AUTO_CLOSED';el.textContent='LIVE: Salesforce org '+m.url.replace('https://','')}else{el.className='pill PENDING_APPROVAL';el.textContent='LOCAL sandbox (not connected to an org)'}
+S=await api('/api/state');if(S.error)throw new Error(S.error);err='';last=JSON.stringify(S);render()}catch(e){err=e.message;document.getElementById('main').innerHTML='<div class="card"><h2>Cannot load data</h2><p class="amb">'+err+'</p></div>'}}
+async function poll(){if(!MODE||MODE.mode!=='salesforce'||document.hidden)return;try{const n=await api('/api/state');if(n.error)return;const j=JSON.stringify(n);if(j!==last){last=j;S=n;if(tab<=1)render()}}catch(e){}}
+setInterval(poll,4000);
+async function reset(){const n=await api('/api/reset','POST');if(n.error){alert(n.error);return}S=n;last=JSON.stringify(n);sel=null;render()}
 function nav(){document.getElementById('nav').innerHTML=TABS.map((t,i)=>`<button class="${i==tab?'on':''}" onclick="tab=${i};render()">${t}</button>`).join('')}
 function kpis(){const k=S.kpis;const c=(v,l,col)=>`<div class="card kpi"><b style="color:${col||'inherit'}">${v}</b><span>${l}</span></div>`;
 return `<div class="grid k">${c(k.processed+'/'+k.total,'findings triaged')}${c(k.autoClosed,'auto-closed (touchless)','var(--grn)')}${c(k.pending,'awaiting human approval','var(--amb)')}${c(k.blocked,'blocked by guardrail','var(--red)')}${c(k.hoursSaved+' h','analyst time saved')}${c('$'+k.dollarsSaved,'value @ $85/h')}${c(k.avgLatencyMs+' ms','avg agent latency')}${c(k.overrideRate+'%','human override rate')}</div>`}
@@ -42,9 +46,9 @@ function showTrace(animate){const f=S.findings.find(x=>x.id==sel);if(!f||!f.run)
 const items=r.steps.map(s=>`<div><span class="tool">${s.tool}</span>(${s.input}) <span class="ms">${s.ms}ms</span><br>&rarr; ${s.output}</div>`);
 items.push(`<div><b>Decision:</b> ${pill(r.status)} category <code>${r.category}</code> score <b>${r.score}</b> (${r.band}) confidence <b>${r.confidence}</b><br><b>Owner:</b> ${r.owner}<br><b>Recommendation:</b> ${r.recommendation}<br><small>${r.tokens} est. tokens &middot; ${r.latencyMs} ms &middot; ${r.minutesSaved} analyst-min saved &middot; prompt ${r.promptVersion}</small></div>`);
 items.forEach((h,i)=>setTimeout(()=>t.appendChild($(h)),animate?i*450:0))}
-async function run(id){sel=id;await api(`/api/findings/${id}/run?prompt=${prompt}`,'POST');S=await api('/api/state');render(true)}
-async function runAll(){for(const f of S.findings.filter(x=>x.status=='New')){await api(`/api/findings/${f.id}/run?prompt=${prompt}`,'POST')}S=await api('/api/state');render()}
-async function dec(id,d){await api(`/api/findings/${id}/${d}`,'POST');sel=id;S=await api('/api/state');render()}
+async function run(id){sel=id;const r=await api(`/api/findings/${id}/run?prompt=${prompt}`,'POST');if(r.error){alert(r.error);return}S=await api('/api/state');last=JSON.stringify(S);render(true)}
+async function runAll(){for(const f of S.findings.filter(x=>x.status=='New')){await api(`/api/findings/${f.id}/run?prompt=${prompt}`,'POST')}S=await api('/api/state');last=JSON.stringify(S);render()}
+async function dec(id,d){const r=await api(`/api/findings/${id}/${d}`,'POST');if(r.error){alert(r.error);return}sel=id;S=await api('/api/state');last=JSON.stringify(S);render()}
 function pipe(){const m=S.pipeline;return `<div class="grid k">${['received','accepted','quarantined'].map(x=>`<div class="card kpi"><b>${m[x]}</b><span>${x}</span></div>`).join('')}<div class="card kpi"><b>${m.acceptRate}%</b><span>accept rate</span></div></div>
 <div class="grid two" style="margin-top:14px"><div class="card"><h2>Quarantine (dead-letter) &mdash; nothing is silently dropped</h2><table><tr><th>Reason</th><th>Raw line</th></tr>${S.quarantine.map(q=>`<tr><td>${pill('fail').replace('fail',q.reason).replace('class="pill '+q.reason,'class="pill fail')}</td><td><code>${q.line.replace(/</g,'&lt;')}</code></td></tr>`).join('')}</table></div>
 <div class="card"><h2>Pipeline stages</h2><p>1. <b>Ingest</b> JSONL from Splunk / CloudTrail / ServiceNow / Archer<br>2. <b>Validate</b> required fields, JSON integrity<br>3. <b>Normalise</b> severities (<code>sev3</code>, <code>crit</code>, <code>HIGH</code> &rarr; canonical)<br>4. <b>Dedupe</b> idempotent on <code>External_Id__c</code><br>5. <b>Quarantine</b> bad records with a reason code<br>6. <b>Serve</b> to the agent + KPI mart</p><p class="mut">Salesforce equivalent: Apex REST upsert on External Id (headless) now; Data 360 / Snowflake zero-copy in the scale-out phase.</p></div></div>`}

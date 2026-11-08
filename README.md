@@ -30,6 +30,12 @@ Or by hand: `node local\server.js` / `npm start` / `npm test`. Zero npm dependen
 4. **No Agentforce? No problem.** Free Developer Edition and basic Trailhead Playgrounds work: use the built-in **Beacon Agent Console** (chat box on the Control Tower page). See [docs/NO_AGENTFORCE_PATH.md](docs/NO_AGENTFORCE_PATH.md) (also Flow + Anonymous Apex options).
 5. Optional, only on Agentforce-enabled orgs: [docs/AGENTFORCE_SETUP.md](docs/AGENTFORCE_SETUP.md).
 
+## One source of truth: keep the web console and Lightning in sync
+The local web console has two modes, shown in a badge at the top right:
+- **LOCAL sandbox** (`run-demo.bat`): self-contained, offline, its own data. Not connected to any org.
+- **LIVE: Salesforce org** (`run-demo-salesforce.bat`): the console reads and writes the org through the Apex REST API `/services/apexrest/beacon/api/*`. The Lightning **Control Tower** reads the same API-backed data and refreshes every 5 seconds, so both always show identical findings, KPIs, approvals and pipeline numbers.
+- **Reset demo** (web console button, Lightning button, Agent Console `reset`, or `sf apex run --file scripts/apex/seed.apex`) runs `BeaconSeed.reset()` in the org: all Beacon data is wiped and re-ingested (18 events: 14 accepted, 4 quarantined; all findings New; no runs). In live mode both screens show the clean slate within seconds.
+
 ## What is in the box
 
 | Capability (JD / Pronto parallel) | Local demo | Salesforce package |

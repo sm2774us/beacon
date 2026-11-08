@@ -7,6 +7,9 @@
 4. (Optional) `deploy-to-salesforce.bat` to your Playground and log in once so the session is warm. Playground orgs expire - re-check the day before.
 5. Print or save the slides as PDF. Bring HDMI/USB-C adapter. Disable notifications. Zoom browser to 110%.
 
+## Synced two-screen demo (optional, impressive)
+Run `run-demo-salesforce.bat` (green LIVE badge) next to the Lightning Control Tower. Click Run agent in either screen, approve in one, press Reset in either: both update within 5 seconds.
+
 ## Pre-flight (10 min before)
 - Open **two** windows: browser (localhost:8080) and cmd (`cd C:\beacon`). Salesforce org tab logged in (optional).
 - Fallback if the browser fails: `run-cli-demo.bat` shows everything in the terminal.

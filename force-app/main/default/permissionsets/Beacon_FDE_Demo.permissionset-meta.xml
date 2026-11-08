@@ -6,6 +6,8 @@
     <classAccesses><apexClass>BeaconIngestRest</apexClass><enabled>true</enabled></classAccesses>
     <classAccesses><apexClass>BeaconAgentController</apexClass><enabled>true</enabled></classAccesses>
     <classAccesses><apexClass>BeaconKpiController</apexClass><enabled>true</enabled></classAccesses>
+    <classAccesses><apexClass>BeaconSeed</apexClass><enabled>true</enabled></classAccesses>
+    <classAccesses><apexClass>BeaconApiRest</apexClass><enabled>true</enabled></classAccesses>
     <fieldPermissions><editable>true</editable><field>Control__c.Control_Code__c</field><readable>true</readable></fieldPermissions>
     <fieldPermissions><editable>true</editable><field>Control__c.Framework__c</field><readable>true</readable></fieldPermissions>
     <fieldPermissions><editable>true</editable><field>Control__c.Owner_Team__c</field><readable>true</readable></fieldPermissions>
@@ -34,15 +36,24 @@
     <fieldPermissions><editable>true</editable><field>Agent_Run__c.Minutes_Saved__c</field><readable>true</readable></fieldPermissions>
     <fieldPermissions><editable>true</editable><field>Agent_Run__c.Guardrails_Triggered__c</field><readable>true</readable></fieldPermissions>
     <fieldPermissions><editable>true</editable><field>Agent_Run__c.Prompt_Version__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>Finding__c.Asset_Ref__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>Finding__c.Control_Ref__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>Ingest_Batch__c.Received__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>Ingest_Batch__c.Accepted__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>Ingest_Batch__c.Quarantined__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>Ingest_Batch__c.Reasons__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>Ingest_Batch__c.Quarantine_Detail__c</field><readable>true</readable></fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>Beacon FDE Demo</label>
     <objectPermissions><allowCreate>true</allowCreate><allowDelete>true</allowDelete><allowEdit>true</allowEdit><allowRead>true</allowRead><modifyAllRecords>true</modifyAllRecords><object>Control__c</object><viewAllRecords>true</viewAllRecords></objectPermissions>
     <objectPermissions><allowCreate>true</allowCreate><allowDelete>true</allowDelete><allowEdit>true</allowEdit><allowRead>true</allowRead><modifyAllRecords>true</modifyAllRecords><object>Asset__c</object><viewAllRecords>true</viewAllRecords></objectPermissions>
     <objectPermissions><allowCreate>true</allowCreate><allowDelete>true</allowDelete><allowEdit>true</allowEdit><allowRead>true</allowRead><modifyAllRecords>true</modifyAllRecords><object>Finding__c</object><viewAllRecords>true</viewAllRecords></objectPermissions>
     <objectPermissions><allowCreate>true</allowCreate><allowDelete>true</allowDelete><allowEdit>true</allowEdit><allowRead>true</allowRead><modifyAllRecords>true</modifyAllRecords><object>Agent_Run__c</object><viewAllRecords>true</viewAllRecords></objectPermissions>
+    <objectPermissions><allowCreate>true</allowCreate><allowDelete>true</allowDelete><allowEdit>true</allowEdit><allowRead>true</allowRead><modifyAllRecords>true</modifyAllRecords><object>Ingest_Batch__c</object><viewAllRecords>true</viewAllRecords></objectPermissions>
     <tabSettings><tab>Control__c</tab><visibility>Visible</visibility></tabSettings>
     <tabSettings><tab>Asset__c</tab><visibility>Visible</visibility></tabSettings>
     <tabSettings><tab>Finding__c</tab><visibility>Visible</visibility></tabSettings>
     <tabSettings><tab>Agent_Run__c</tab><visibility>Visible</visibility></tabSettings>
     <tabSettings><tab>Beacon_Dashboard</tab><visibility>Visible</visibility></tabSettings>
+    <tabSettings><tab>Ingest_Batch__c</tab><visibility>Visible</visibility></tabSettings>
 </PermissionSet>

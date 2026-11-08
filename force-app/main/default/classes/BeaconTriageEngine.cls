@@ -1,9 +1,14 @@
 /**
- * Triage rules. Mirrors local/lib/engine.js (prompt v2 rules): same weights, thresholds and guardrails.
- * Deterministic on purpose: the LLM-facing step (classification) is replaceable by an Agentforce
- * Prompt Template, while scoring and guardrails stay auditable Apex.
+ * Triage rules. Mirrors local/lib/engine.js (prompt v2): same weights, thresholds, guardrails, step trace and latency model,
+ * so the Lightning app and the local console show identical numbers.
  */
 public with sharing class BeaconTriageEngine {
+    public class Step {
+        public String tool;
+        public String input;
+        public String output;
+        public Integer ms;
+    }
     public class Result {
         public String category;
         public Integer score;
@@ -15,6 +20,8 @@ public with sharing class BeaconTriageEngine {
         public Decimal minutesSaved;
         public Integer latencyMs;
         public Integer tokens;
+        public String owner;
+        public List<Step> steps = new List<Step>();
     }
 
     static final Map<String, Integer> SEV = new Map<String, Integer>{ 'Low' => 1, 'Medium' => 2, 'High' => 3, 'Critical' => 4 };
@@ -43,22 +50,56 @@ public with sharing class BeaconTriageEngine {
     static final Pattern NEGATION = Pattern.compile('(no evidence of|false positive|came back clean|not malicious)');
     static final Pattern INJECTION = Pattern.compile('(ignore (all )?(previous|prior) instructions|system prompt|disregard (the )?policy)');
 
-    public static String classify(String text) {
+    /** Returns {category, why}. */
+    public static List<String> classifyDetail(String text) {
         String t = (text == null ? '' : text).toLowerCase();
-        if (NEGATION.matcher(t).find()) { return 'benign'; }
+        if (NEGATION.matcher(t).find()) {
+            return new List<String>{ 'benign', 'Negation pattern found; treated as false positive.' };
+        }
         for (String c : CATS) {
             for (String k : KW.get(c)) {
-                if (t.contains(k)) { return c; }
+                if (t.contains(k)) { return new List<String>{ c, 'Matched "' + k + '" -> ' + c }; }
             }
         }
-        return 'other';
+        return new List<String>{ 'other', 'No keyword matched' };
+    }
+
+    public static String classify(String text) {
+        return classifyDetail(text)[0];
+    }
+
+    static Long hash(String s) {
+        Long h = 7;
+        for (Integer i = 0; i < s.length(); i++) {
+            h = Math.mod(h * 31 + s.charAt(i), 4294967296L);
+        }
+        return h;
+    }
+
+    static void addStep(Result r, String id, String tool, String input, String output, Integer base) {
+        Step st = new Step();
+        st.tool = tool;
+        st.input = input;
+        st.output = output;
+        st.ms = base + Math.mod(hash(id + tool), 40L).intValue();
+        r.steps.add(st);
     }
 
     public static Result triage(Finding__c f, Asset__c asset, Control__c control) {
         Result r = new Result();
-        String text = f.Title__c + '. ' + f.Description__c;
+        String id = f.External_Id__c == null ? '' : f.External_Id__c;
+        String descText = f.Description__c == null ? '' : f.Description__c;
+        String text = f.Title__c + '. ' + descText;
         Boolean injected = INJECTION.matcher(text.toLowerCase()).find();
-        r.category = classify(text);
+
+        addStep(r, id, 'get_asset_context', f.Asset_Ref__c == null ? '' : f.Asset_Ref__c,
+            asset == null ? 'UNKNOWN ASSET' : 'tier ' + asset.Tier__c.intValue() + ', pii=' + asset.Contains_PII__c + ', internet=' + asset.Internet_Facing__c, 60);
+        addStep(r, id, 'lookup_control', f.Control_Ref__c == null ? '' : f.Control_Ref__c,
+            control == null ? 'UNMAPPED CONTROL' : control.Framework__c + ' ' + control.Control_Code__c + ' ' + control.Name + ' (criticality ' + control.Criticality__c.intValue() + ')', 45);
+        List<String> cl = classifyDetail(text);
+        r.category = cl[0];
+        addStep(r, id, 'classify_llm', 'prompt v2', cl[1], 420);
+
         Integer score = SEV.get(f.Severity__c) * 10 + BONUS.get(r.category);
         if (control != null && control.Criticality__c != null) { score += control.Criticality__c.intValue(); }
         if (asset != null) {
@@ -68,6 +109,8 @@ public with sharing class BeaconTriageEngine {
         }
         r.score = Math.max(0, Math.min(100, score));
         r.band = r.score >= 75 ? 'Critical' : (r.score >= 50 ? 'High' : (r.score >= 30 ? 'Medium' : 'Low'));
+        addStep(r, id, 'score_risk', 'sev=' + f.Severity__c, 'score ' + r.score + ' -> ' + r.band, 20);
+
         r.confidence = 0.5 + (control != null ? 0.15 : 0) + (asset != null ? 0.15 : 0) + (r.category != 'other' ? 0.15 : 0) + 0.05;
         if (r.confidence > 1) { r.confidence = 1; }
         if (injected) { r.status = 'Blocked'; r.guardrails.add('G4_PROMPT_INJECTION'); }
@@ -77,10 +120,15 @@ public with sharing class BeaconTriageEngine {
             if (asset != null && asset.Contains_PII__c) { r.status = 'Assigned'; r.guardrails.add('G1_PII_NO_AUTOCLOSE'); }
             else { r.status = 'Auto-Closed'; }
         } else { r.status = 'Assigned'; }
+        addStep(r, id, 'policy_guardrail', 'conf=' + r.confidence.setScale(2), r.guardrails.isEmpty() ? 'no guardrail fired' : String.join(r.guardrails, ','), 15);
+
         r.minutesSaved = r.status == 'Auto-Closed' ? 17.5 : (r.status == 'Assigned' ? 14 : (r.status == 'Pending Approval' ? 12 : 0));
         r.recommendation = injected ? 'Content attempted to override agent policy. Quarantined; notify SOC.' : REC.get(r.category);
-        r.tokens = (text.length() + r.recommendation.length()) / 4 + 380;
-        r.latencyMs = 560 + Math.mod(Math.abs(f.External_Id__c == null ? 0 : f.External_Id__c.hashCode()), 120);
+        Integer lat = 0;
+        for (Step s : r.steps) { lat += s.ms; }
+        r.latencyMs = lat;
+        r.tokens = Math.roundToLong((text.length() + r.recommendation.length()) / 4.0).intValue() + 380;
+        r.owner = (control != null && control.Owner_Team__c != null) ? control.Owner_Team__c : 'GRC Office (unmapped)';
         return r;
     }
 }

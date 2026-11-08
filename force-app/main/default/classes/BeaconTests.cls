@@ -57,17 +57,58 @@ private class BeaconTests {
     static void kpiController() {
         insert mk('K1', 'Low', 'dev-sandbox', 'Config drift', 'drift');
         System.assertEquals(1, BeaconKpiController.triageNew());
-        System.assertEquals(1, BeaconKpiController.getKpis().triaged);
+        System.assertEquals(1, (Integer) BeaconKpiController.getKpis().get('processed'));
         System.assertEquals(1, BeaconKpiController.getQueue().size());
     }
 
     @IsTest
     static void agentConsoleHandlesIntents() {
         insert mk('E-1002', 'Critical', 'core-ledger', 'Ransomware C2 beacon', 'beaconing to ransomware domain');
-        System.assertEquals('Pending Approval', BeaconAgentController.ask('triage E-1002').status);
+        System.assertEquals('PENDING_APPROVAL', BeaconAgentController.ask('triage E-1002').status);
         System.assert(BeaconAgentController.ask('why is E-1002 pending').steps.size() == 5);
         System.assertEquals('Approved', BeaconAgentController.ask('approve E-1002').status);
         System.assert(BeaconAgentController.ask('status').text.contains('triaged'));
         System.assert(BeaconAgentController.ask('hello').text.contains('Try'));
+    }
+
+    @IsTest
+    static void resetGivesCleanSlateAndStateMatchesLocalDemo() {
+        BeaconSeed.reset();
+        Map<String, Object> st = BeaconApiRest.state();
+        Map<String, Object> k = (Map<String, Object>) st.get('kpis');
+        Map<String, Object> pipe = (Map<String, Object>) st.get('pipeline');
+        System.assertEquals(14, k.get('total'));
+        System.assertEquals(0, k.get('processed'));
+        System.assertEquals(18, pipe.get('received'));
+        System.assertEquals(14, pipe.get('accepted'));
+        System.assertEquals(4, pipe.get('quarantined'));
+        BeaconKpiController.triageNew();
+        k = (Map<String, Object>) BeaconApiRest.state().get('kpis');
+        System.assertEquals(14, k.get('processed'));
+        System.assertEquals(4, k.get('autoClosed'));
+        System.assertEquals(6, k.get('assigned'));
+        System.assertEquals(3, k.get('pending'));
+        System.assertEquals(1, k.get('blocked'));
+        System.assertEquals(660, k.get('avgLatencyMs'));
+        BeaconSeed.reset();
+        k = (Map<String, Object>) BeaconApiRest.state().get('kpis');
+        System.assertEquals(0, k.get('processed'));
+        System.assertEquals(0, [SELECT COUNT() FROM Agent_Run__c]);
+    }
+
+    @IsTest
+    static void restPostOperations() {
+        RestContext.response = new RestResponse();
+        RestContext.request = new RestRequest();
+        RestContext.request.requestURI = '/services/apexrest/beacon/api/reset';
+        BeaconApiRest.doPost();
+        RestContext.request.requestURI = '/services/apexrest/beacon/api/triage/E-1002';
+        BeaconApiRest.doPost();
+        RestContext.request.requestURI = '/services/apexrest/beacon/api/decision/E-1002/approve';
+        BeaconApiRest.doPost();
+        System.assertEquals('APPROVED', (String) BeaconApiRest.findingView('E-1002').get('status'));
+        RestContext.request.requestURI = '/services/apexrest/beacon/api/decision/E-1002/approve';
+        BeaconApiRest.doPost();
+        System.assertEquals(409, RestContext.response.statusCode);
     }
 }

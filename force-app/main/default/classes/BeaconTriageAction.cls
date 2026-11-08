@@ -1,6 +1,6 @@
 /**
- * Agent action: exposed to Agentforce (Agent Builder > Add Action > Apex) and callable from Flow.
- * Bulk-safe: one SOQL per object, one DML per object, regardless of batch size.
+ * Agent action: exposed to Agentforce (Agent Builder > Add Action > Apex), Flow, REST and the Agent Console.
+ * Bulk-safe: one SOQL per object, one DML per object. Keeps exactly ONE Agent_Run__c per finding (latest).
  */
 public with sharing class BeaconTriageAction {
     public class Request {
@@ -21,14 +21,14 @@ public with sharing class BeaconTriageAction {
         Set<Id> ids = new Set<Id>();
         for (Request q : requests) { ids.add(q.findingId); }
         Map<Id, Finding__c> findings = new Map<Id, Finding__c>([
-            SELECT Id, External_Id__c, Title__c, Description__c, Severity__c, Asset__c, Control__c
+            SELECT Id, External_Id__c, Title__c, Description__c, Severity__c, Asset__c, Control__c, Asset_Ref__c, Control_Ref__c
             FROM Finding__c WHERE Id IN :ids WITH USER_MODE
         ]);
         Set<Id> assetIds = new Set<Id>();
         Set<Id> controlIds = new Set<Id>();
         for (Finding__c f : findings.values()) { assetIds.add(f.Asset__c); controlIds.add(f.Control__c); }
         Map<Id, Asset__c> assets = new Map<Id, Asset__c>([SELECT Id, Tier__c, Contains_PII__c, Internet_Facing__c FROM Asset__c WHERE Id IN :assetIds WITH USER_MODE]);
-        Map<Id, Control__c> controls = new Map<Id, Control__c>([SELECT Id, Criticality__c FROM Control__c WHERE Id IN :controlIds WITH USER_MODE]);
+        Map<Id, Control__c> controls = new Map<Id, Control__c>([SELECT Id, Name, Control_Code__c, Framework__c, Criticality__c, Owner_Team__c FROM Control__c WHERE Id IN :controlIds WITH USER_MODE]);
 
         List<Finding__c> updates = new List<Finding__c>();
         List<Agent_Run__c> runs = new List<Agent_Run__c>();
@@ -45,6 +45,8 @@ public with sharing class BeaconTriageAction {
             resp.recommendation = r.recommendation; resp.guardrails = String.join(r.guardrails, ',');
             out.put(f.Id, resp);
         }
+        List<Agent_Run__c> old = [SELECT Id FROM Agent_Run__c WHERE Finding__c IN :findings.keySet() WITH USER_MODE];
+        delete as user old;
         update as user updates;
         insert as user runs;
         List<Response> ordered = new List<Response>();

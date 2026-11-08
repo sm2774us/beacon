@@ -1,10 +1,12 @@
 <template>
     <lightning-card title="Beacon - Agentic GRC Control Tower" icon-name="standard:einstein_replies">
         <div slot="actions">
+            <lightning-button variant="neutral" label="Reset demo" onclick={handleReset} disabled={busy} class="slds-m-right_x-small"></lightning-button>
             <lightning-button variant="brand" label="Run agent on new findings" onclick={handleRun} disabled={busy}></lightning-button>
         </div>
         <div class="slds-p-horizontal_medium">
-            <template if:true={error}><p class="slds-text-color_error">{error}</p></template>
+            <template if:true={error}><p class="slds-text-color_error slds-m-bottom_small">{error}</p></template>
+            <p class="slds-text-color_weak slds-m-bottom_small">Live from the org. Refreshes every 5 seconds. The local web console in live mode shows the same data.</p>
             <template if:true={kpi}>
                 <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_medium">
                     <template for:each={tiles} for:item="t">
@@ -18,7 +20,7 @@
                 </div>
             </template>
             <c-beacon-agent-console onagentdone={handleDone}></c-beacon-agent-console>
-            <lightning-datatable key-field="Id" data={rows} columns={columns} hide-checkbox-column></lightning-datatable>
+            <lightning-datatable key-field="id" data={rows} columns={columns} hide-checkbox-column onrowaction={handleRowAction}></lightning-datatable>
         </div>
     </lightning-card>
 </template>

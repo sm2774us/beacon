@@ -4,11 +4,31 @@ const http = require('http'), fs = require('fs'), path = require('path');
 const store = require('./lib/store');
 const { runPipeline } = require('./lib/pipeline');
 const PORT = process.env.PORT || 8080;
+const SF_ORG = process.env.SF_ORG || ((process.argv.find(a => a.startsWith('--org=')) || '').slice(6)) || '';
+const sf = SF_ORG ? require('./lib/sf') : null;
 const json = (res, o, c = 200) => { res.writeHead(c, { 'Content-Type': 'application/json' }); res.end(JSON.stringify(o)); };
 const body = req => new Promise(r => { let b = ''; req.on('data', d => b += d); req.on('end', () => { try { r(JSON.parse(b || '{}')); } catch { r({}); } }); });
 const state = () => { const s = store.get(); return { findings: s.findings.map(f => ({ ...f, run: s.runs[f.id] || null })), kpis: store.kpis(), pipeline: s.pipeline.metrics, quarantine: s.pipeline.quarantine, controls: s.controls, assets: s.assets }; };
+async function orgRoute(req, res, p) { // live mode: proxy to the Salesforce org (single source of truth)
+  let m;
+  if (p === '/api/state') return json(res, await sf.call(SF_ORG, 'state'));
+  if (p === '/api/reset' && req.method === 'POST') return json(res, await sf.call(SF_ORG, 'reset', 'POST'));
+  if ((m = p.match(/^\/api\/findings\/([^/]+)\/run$/)) && req.method === 'POST') {
+    const st = await sf.call(SF_ORG, 'triage/' + encodeURIComponent(m[1]), 'POST'); const f = st.findings.find(x => x.id === m[1]);
+    return json(res, { run: f && f.run, kpis: st.kpis });
+  }
+  if ((m = p.match(/^\/api\/findings\/([^/]+)\/(approve|reject)$/)) && req.method === 'POST') {
+    const st = await sf.call(SF_ORG, `decision/${encodeURIComponent(m[1])}/${m[2]}`, 'POST'); const f = st.findings.find(x => x.id === m[1]);
+    return json(res, { run: f && f.run, kpis: st.kpis });
+  }
+  return false;
+}
 http.createServer(async (req, res) => {
   const u = new URL(req.url, 'http://x'), p = u.pathname;
+  if (p === '/api/mode') { let url = ''; if (sf) { try { url = (await sf.getAuth(SF_ORG)).url; } catch (e) { url = 'NOT CONNECTED: ' + e.message; } } return json(res, { mode: sf ? 'salesforce' : 'local', org: SF_ORG, url }); }
+  if (sf && p.startsWith('/api/') && p !== '/api/evals') {
+    try { const r = await orgRoute(req, res, p); if (r !== false) return; } catch (e) { return json(res, { error: e.message }, e.status || 502); }
+  }
   if (p === '/api/state') return json(res, state());
   if (p === '/api/reset' && req.method === 'POST') { store.reset(); return json(res, state()); }
   if (p === '/api/evals') return json(res, store.evaluate(u.searchParams.get('prompt') || 'v2'));
@@ -28,4 +48,4 @@ http.createServer(async (req, res) => {
   }
   const file = path.join(__dirname, 'public', p === '/' ? 'index.html' : p.replace(/\.\./g, ''));
   fs.readFile(file, (e, d) => { if (e) { res.writeHead(404); return res.end('Not found'); } res.writeHead(200, { 'Content-Type': file.endsWith('.html') ? 'text/html' : 'text/plain' }); res.end(d); });
-}).listen(PORT, () => console.log(`Beacon Control Tower running -> http://localhost:${PORT}`));
+}).listen(PORT, () => console.log(`Beacon Control Tower running -> http://localhost:${PORT}  [${sf ? 'LIVE: Salesforce org alias ' + SF_ORG : 'LOCAL sandbox (not connected to an org)'}]`));
