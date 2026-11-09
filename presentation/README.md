@@ -145,7 +145,7 @@ graph TD
 | Presentation | Original Slide | Enhanced Action | Improvement Implemented | Reason |
 | :--- | :--- | :--- | :--- | :--- |
 | **Strategic Deck** | Slide 6 (Agility) | IMPROVED | Added explicit definitions and examples for **Ambiguity** vs. **Uncertainty** | Addresses Round 1 feedback coaching directly. |
-| **Strategic Deck** | Slide 11 (ROI) | IMPROVED | Formatted ROI math with explicit sensitivity analysis ($50\%$ volume) and cost breakdown ($\$1.25$/finding token + $\$2.5\text{K}$ overhead) | Strengthens financial defensibility against CFO scrutiny. |
+| **Strategic Deck** | Slide 11 (ROI) | IMPROVED | Formatted ROI math with explicit sensitivity analysis ($50\\%$ volume) and cost breakdown ($\\$1.25$/finding token + $\\$2.5\text{K}$ overhead) | Strengthens financial defensibility against CFO scrutiny. |
 | **Demo Deck** | Slide 6 (Technical Decisions) | IMPROVED | Added explicit schema table for `Finding__c`, `Control__c`, and `Agent_Run__c` | Proves concrete Salesforce CRM data modeling expertise. |
 | **Demo Deck** | Slide 18 (Current State) | IMPROVED | Added closed-loop feedback pipeline (Human Override $\to$ Golden Set Case) | Demonstrates mature LLMOps engineering discipline. |
 
