@@ -178,12 +178,26 @@ sequenceDiagram
 
 ### Mathematical Proof of ROI & Capacity Model
 
-$$\text{Gross Value} = N_{\text{findings}} \times \text{Scope}\% \times \left( \frac{T_{\text{manual}} - T_{\text{agent}}}{60} \right) \times \text{Rate}_{\text{loaded}}$$
+$$
+\text{Gross Value} = N_{\text{findings}} \times \text{Scope}\% \times \left( \frac{T_{\text{manual}} - T_{\text{agent}}}{60} \right) \times \text{Rate}_{\text{loaded}}
+$$
 
-$$\text{Net ROI} = \frac{\text{Gross Value} - (C_{\text{tokens}} + C_{\text{infra}})}{C_{\text{tokens}} + C_{\text{infra}}} \times 100\%$$
+$$
+\text{Net ROI} = \frac{\text{Gross Value} - (C_{\text{tokens}} + C_{\text{infra}})}{C_{\text{tokens}} + C_{\text{infra}}} \times 100\%
+$$
 
-* **Inputs:** $N = 4,000$, $\text{Scope}\% = 0.70$ ($2,800$ findings), $T_{\text{manual}} = 18.0\text{ min}$, $T_{\text{agent}} = 4.4\text{ min}$ ($\Delta = 13.6\text{ min} = 0.2267\text{ hrs}$), $\text{Rate} = \$85.00/\text{hr}$.
-* **Outputs:** Gross Hours Returned $= 634.67\text{ hrs/mo}$. Gross Value $= \$53,947/\text{mo}$. Total Run Cost $= \$3,500\text{ (tokens)} + \$2,500\text{ (overhead)} = \$6,000/\text{mo}$. Net Value $= \$47,947/\text{mo}$. Net ROI $= \frac{\$47,947}{\$6,000} = 799.1\%$.
+* **Inputs:**
+  * $N = 4,000$
+  * $\text{Scope}\\% = 0.70$ ($2,800$ findings)
+  * $T_{\text{manual}} = 18.0\text{ min}$
+  * $T_{\text{agent}} = 4.4\text{ min}$ ($\Delta = 13.6\text{ min} = 0.2267\text{ hrs}$)
+  * $\text{Rate} = \\$85.00/\text{hr}$
+* **Outputs:**
+  * $\text{Gross Hours Returned} = 634.67\text{ hrs/mo}$
+  * $\text{Gross Value} = \$53,947/\text{mo}$
+  * $\text{Total Run Cost} = \\$3,500\text{ (tokens)} + \\$2,500\text{ (overhead)} = \\$6,000/\text{mo}$
+  * $\text{Net Value} = \\$47,947/\text{mo}$
+  * $\text{Net ROI} = \frac{\\$47,947}{\\$6,000} = 799.1\\%$
 
 ---
 
