@@ -49,7 +49,7 @@ static final Pattern INJECTION = Pattern.compile('(ignore (all )?(previous|prior
 
 | Pattern Name | Regular Expression | What It Does & How It's Used |
 | --- | --- | --- |
-| **`NEGATION`** | `(no evidence of|false positive\|came back clean\|not malicious)` | Scans text for phrases indicating a false alarm. If matched in `classifyDetail()`, the engine immediately short-circuits classification, overrides category to **`benign`**, and tags it as a false positive. |
+| **`NEGATION`** | `(no evidence of\|false positive\|came back clean\|not malicious)` | Scans text for phrases indicating a false alarm. If matched in `classifyDetail()`, the engine immediately short-circuits classification, overrides category to **`benign`**, and tags it as a false positive. |
 | **`INJECTION`** | `(ignore (all )?(previous\|prior) instructions\|system prompt\|disregard (the )?policy)` | Scans finding titles and descriptions for prompt injection payloads designed to hijack automated agent workflows. If matched, `injected` becomes `true`, forcing the status to **`'Blocked'`** and firing `G4_PROMPT_INJECTION`. |
 
 ---
