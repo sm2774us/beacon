@@ -819,6 +819,8 @@ Design point: runs are *append-only facts* separate from the finding, so a findi
 <a id="s13-10"></a>
 ### 13.10 `BeaconTriageEngine.cls` - pure rules (no DML, no SOQL)
 
+**[force-app/main/default/classes/BeaconTriageEngine.cls](./sub-docs/force-app_main_default_classes/BeaconTriageEngine_cls.md)**
+
 > **In plain English:** The *rulebook in Apex*: the same arithmetic and guardrails as the Node brain, with no database work so it is easy to test.
 
 `public with sharing`, with an inner `Result` (category, score, band, confidence, status, [guardrails](#g-guardrail), recommendation, minutesSaved, latencyMs, tokens). Static maps `SEV`, `BONUS`, `KW`, `REC` and two compiled `Pattern`s replicate the JS constants (v2 vocabulary only). `classify(text)` = negation pre-check, then ordered category scan. `triage(f, asset, control)` computes the identical score, band, confidence and guardrail ladder, but with Salesforce status strings (`'Pending Approval'`, `'Auto-Closed'`). Keeping this class free of [DML](#g-dml) makes it unit-testable and reusable from Flow, REST or [Agentforce](#g-agentforce). Latency is modelled as `560 + mod(abs(hashCode(External_Id__c)), 120)`; tokens use the same `(len/4)+380` formula.
@@ -833,12 +835,16 @@ Design point: runs are *append-only facts* separate from the finding, so a findi
 <a id="s13-12"></a>
 ### 13.12 `BeaconIngestRest.cls` - headless ingest
 
+**[force-app/main/default/classes/BeaconIngestRest.cls](./sub-docs/force-app_main_default_classes/BeaconIngestRest_cls.md)**
+
 > **In plain English:** The *HTTP mailbox* in Salesforce where other systems post alerts.
 
 `@RestResource(urlMapping='/beacon/v1/findings/*')` exposes `POST /services/apexrest/beacon/v1/findings`. Body: array of `{id, src, sev, asset, control, title, detail}` (a global inner `Evt` class so `JSON.deserialize` can bind). Builds name->Id maps for assets and controls once, applies the same validation ladder as `pipeline.js` (missing fields, invalid severity, in-batch duplicate), then `upsert as user ... Finding__c.External_Id__c`. Returns `Outcome{received, upserted, quarantined[]}`. Differences from the Node pipeline worth knowing: it is **idempotent across calls** (upsert updates), it has no per-line `malformed_json` path (a syntactically invalid array fails the whole request because deserialisation happens before validation), and unknown asset/control names become null lookups instead of rejection (so G3 handles them later).
 
 <a id="s13-13"></a>
 ### 13.13 `BeaconKpiController.cls` - dashboard data
+
+**[force-app/main/default/classes/BeaconKpiController.cls](./sub-docs/force-app_main_default_classes/BeaconKpiController_cls.md)**
 
 > **In plain English:** The *number supplier* for the dashboard tiles and table, plus the button that triages every new finding.
 
@@ -855,6 +861,8 @@ Intent parser for orgs without Agentforce: [regex](#g-regex) `(F-\d{5}|E-\d{4})`
 
 <a id="s13-15"></a>
 ### 13.15 `BeaconTests.cls` - 5 Apex tests
+
+**[force-app/main/default/classes/BeaconTests.cls](./sub-docs/force-app_main_default_classes/BeaconTests_cls.md)**
 
 > **In plain English:** The *Salesforce-side safety net*: five tests proving routing, ingest and the console work.
 
