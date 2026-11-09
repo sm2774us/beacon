@@ -122,9 +122,21 @@ Your presentation materials are mature, highly credible, and aligned directly wi
 ### Part B: Open-Source Demo Presentation (`SALESFORCE_FINAL_ROUND_OPEN_SOURCE_DEMO.pptx`)
 
 * **Slide 3 (What I Built and Why):** Highlights GRC triage friction ($18\text{ min}$ manual triage reduced to automated initial filtering with deterministic scoring).
+
 * **Slide 5 (Architecture):** Maps Node.js/Python microservices and Apex REST endpoints to Salesforce LWC Control Tower UI and Agentforce topic actions.
+
 * **Slide 6 (Key Technical Decisions):** Focuses on *Deterministic Scoring* (LLM classifies; math computes risk), *Guardrails as Code* (G1 PII never auto-closed, G2 Critical needs human, G3 low confidence, G4 prompt injection blocked), and *Telemetry First* (`Agent_Run__c` custom object).
+  Regulators and frameworks—such as the NIST AI Risk Management Framework and the **EU AI Act** — mandate that enterprise software must implement "Risk Tiering" or a "Chain of Responsibility".
+  Engineers adapt these regulatory buckets into systematic "G-Series" code exceptions to handle them programmatically:
+  * **G1 (Compliance Gate):** Checks basic legal/privacy baselines (e.g., GDPR/HIPAA compliance via **PII masking**).
+  * **G2 (Operational Safety Gate):** Checks brand safety or massive system damage (**Critical** failures, prohibited actions, or structural violations).
+  * **G3 (Statistical Threshold Gate):** Evaluates if the math/probability broke down (**Low Confidence** outputs that fail deterministic scoring rules).
+  * **G4 (Security/Adversarial Gate):** Identifies active malicious manipulation (**Prompt Injections** or system hijacking attempts).
+
+  In short, the terms are a synthesis of **Stage-Gate engineering architecture** combined with **regulatory risk tiering**, customized to give developers an explicit blueprint for intercepting bad AI behavior before it reaches a customer.
+
 * **Slides 8–11 (Live Demo Run of Show & Prompt Evals):** Walks through execution from ingestion $\to$ agent run $\to$ guardrail trigger $\to$ Flow approval $\to$ CI prompt evaluation (improving prompt v1 $64\%$ to v2 $100\%$ accuracy on golden set).
+
 * **Slides 16–18 (Deployment, Impact, Current State):** Explains Release 1 (trust & shadow mode) vs. Scale (Data 360 zero-copy, drift alerts) and continuous feedback loops driven by human override tracking.
 
 ---
