@@ -194,10 +194,94 @@ $$
   * $\text{Rate} = \\$85.00/\text{hr}$
 * **Outputs:**
   * $\text{Gross Hours Returned} = 634.67\text{ hrs/mo}$
-  * $\text{Gross Value} = \$53,947/\text{mo}$
+  * $\text{Gross Value} = \\$53,947/\text{mo}$
   * $\text{Total Run Cost} = \\$3,500\text{ (tokens)} + \\$2,500\text{ (overhead)} = \\$6,000/\text{mo}$
   * $\text{Net Value} = \\$47,947/\text{mo}$
   * $\text{Net ROI} = \frac{\\$47,947}{\\$6,000} = 799.1\\%$
+
+#### **1. Input Variables & Baseline Assumptions**
+
+* **Total Monthly Findings ($N_{\text{findings}}$):** $4,000\text{ security findings/month}$
+* **In-Scope Automation Ratio ($\text{Scope}\\%$):** $70\\%\text{ (or } 0.70\text{)}$
+* **Manual Triage Time ($T_{\text{manual}}$):** $18.0\text{ minutes/finding}$
+* **Agent-Assisted Triage Time ($T_{\text{agent}}$):** $4.4\text{ minutes/finding}$
+* **Analyst Loaded Rate ($\text{Rate}_{\text{loaded}}$):** $\\$85.00/\text{hour}$
+* **Monthly Token Cost ($C_{\text{tokens}}$):** $\\$3,500/\text{month}$
+* **Monthly Infrastructure & Platform Overhead ($C_{\text{infra}}$):** $\\$2,500/\text{month}$
+
+#### **2. Intermediate Calculations**
+
+##### **Step A: In-Scope Volume**
+
+Find how many findings are processed by the agent each month:
+
+$$\text{In-Scope Findings} = N_{\text{findings}} \times \text{Scope}\\%$$
+
+$$\text{In-Scope Findings} = 4,000 \times 0.70 = 2,800\text{ findings/month}$$
+
+##### **Step B: Time Saved Per Finding**
+
+Calculate the net minutes and hours saved for every triaged finding:
+
+$$\Delta T = T_{\text{manual}} - T_{\text{agent}}$$
+
+$$\Delta T = 18.0\text{ min} - 4.4\text{ min} = 13.6\text{ minutes saved/finding}$$
+
+Convert minutes to hours:
+
+$$\Delta T_{\text{hours}} = \frac{13.6\text{ min}}{60\text{ min/hr}} = 0.226666...\text{ hours saved/finding} \approx 0.2267\text{ hrs}$$
+
+##### **Step C: Gross Hours Returned Per Month**
+
+Multiply in-scope findings by hours saved per finding:
+
+$$\text{Gross Hours Returned} = 2,800\text{ findings} \times 0.226666...\text{ hrs/finding}$$
+
+$$\text{Gross Hours Returned} = \frac{38,080\text{ total minutes saved}}{60\text{ min/hr}} = 634.6666...\text{ hrs/month} \approx 634.67\text{ hrs/month}$$
+
+##### **Step D: Gross Financial Value**
+
+Monetize the hours returned using the loaded rate of $\\$85.00/\text{hr}$:
+
+$$\text{Gross Value} = \text{Gross Hours Returned} \times \text{Rate}_{\text{loaded}}$$
+
+$$\text{Gross Value} = 634.6666...\text{ hrs} \times \\$85.00/\text{hr} = \\$53,946.666...\text{/month} \approx \\$53,947\text{/month}$$
+
+##### **Step E: Total Monthly Run Cost**
+
+Sum fixed infrastructure costs and variable token costs:
+
+$$C_{\text{total}} = C_{\text{tokens}} + C_{\text{infra}}$$
+
+$$C_{\text{total}} = \\$3,500 + \\$2,500 = \\$6,000\text{/month}$$
+
+##### **Step F: Net Value (Net Savings)**
+
+Subtract total monthly operating costs from gross value generated:
+
+$$\text{Net Value} = \text{Gross Value} - C_{\text{total}}$$
+
+$$\text{Net Value} = \\$53,946.67 - \\$6,000 = \\$47,946.67\text{/month} \approx \\$47,947\text{/month}$$
+
+##### **Step G: Net Return on Investment (Net ROI)**
+
+Divide the net financial value by total costs to get the ROI percentage:
+
+$$\text{Net ROI} = \left( \frac{\text{Net Value}}{C_{\text{total}}} \right) \times 100\\%$$
+
+$$\text{Net ROI} = \left( \frac{\\$47,946.67}{\\$6,000} \right) \times 100\\% = 7.99111...\times 100\\% \approx 799.11\\% \approx 799.1\\%$$
+
+#### **3. Executive Summary Table**
+
+| Metric | Calculation Step | Result |
+| --- | --- | --- |
+| **In-Scope Volume** | $4,000 \times 0.70$ | **$2,800$ findings/mo** |
+| **Time Saved / Finding** | $18.0\text{ min} - 4.4\text{ min}$ | **$13.6$ min ($0.2267$ hrs)** |
+| **Gross Capacity Returned** | $2,800 \times 0.2267\text{ hrs}$ | **$634.67$ hours/mo** ($\approx 3.96\text{ FTEs}$) |
+| **Gross Monthly Value** | $634.67\text{ hrs} \times \\$85.00/\text{hr}$ | **$\\$53,947$ /mo** |
+| **Total Operating Cost** | $\\$3,500\text{ (tokens)} + \\$2,500\text{ (infra)}$ | **$\\$6,000$ /mo** |
+| **Net Value Returned** | $\\$53,947 - \\$6,000$ | **$\\$47,947$ /mo** |
+| **Net ROI** | $(\\$47,947 / \\$6,000) \times 100\\%$ | **$799.1\\%$** |
 
 ---
 
