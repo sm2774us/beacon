@@ -65,3 +65,10 @@ docs/         DEMO_RUNBOOK, PRESENTATION_PLAYBOOK, ARCHITECTURE, AGENTFORCE_SETU
 5. **Quarantine, never drop** - bad records are kept with a reason code.
 
 Simulated numbers (latency, minutes saved) are illustrative model assumptions, not customer results.
+
+
+## Prompt v1 vs v2 comparison (added)
+- Mission Control: the **v1 / v2** switch now drives every run (and stays in sync); any finding can be **re-run** with the other version.
+- **Compare v1 vs v2** (per finding, side panel) and the **V1 vs V2 Lab** tab run both versions on all findings as a what-if, with no reset and no change to the live queue or KPIs. API: `GET /api/compare`.
+- Local mode only: the Salesforce org path (Apex) still runs prompt v2.
+- Latency is simulated and identical across versions by design; the classifier is a keyword stub.

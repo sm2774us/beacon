@@ -26,11 +26,12 @@ async function orgRoute(req, res, p) { // live mode: proxy to the Salesforce org
 http.createServer(async (req, res) => {
   const u = new URL(req.url, 'http://x'), p = u.pathname;
   if (p === '/api/mode') { let url = ''; if (sf) { try { url = (await sf.getAuth(SF_ORG)).url; } catch (e) { url = 'NOT CONNECTED: ' + e.message; } } return json(res, { mode: sf ? 'salesforce' : 'local', org: SF_ORG, url }); }
-  if (sf && p.startsWith('/api/') && p !== '/api/evals') {
+  if (sf && p.startsWith('/api/') && p !== '/api/evals' && p !== '/api/compare') {
     try { const r = await orgRoute(req, res, p); if (r !== false) return; } catch (e) { return json(res, { error: e.message }, e.status || 502); }
   }
   if (p === '/api/state') return json(res, state());
   if (p === '/api/reset' && req.method === 'POST') { store.reset(); return json(res, state()); }
+  if (p === '/api/compare') return json(res, store.compare());
   if (p === '/api/evals') return json(res, store.evaluate(u.searchParams.get('prompt') || 'v2'));
   let m;
   if ((m = p.match(/^\/api\/findings\/([^/]+)\/run$/)) && req.method === 'POST') {
