@@ -141,9 +141,9 @@ LOW UNCERTAINTY ─────────────────────�
         ▼                                  ▼                                       ▼
 ┌──────────────┐                  ┌──────────────────┐                    ┌──────────────────┐
 │   APEX CORE  │                  │ MULESOFT API GW  │                    │ LIGHTNING WEB    │
-│  • Invocable │                  • External REST/   │                    │ COMPONENTS (LWC) │
+│  • Invocable │                  │ • External REST/ │                    │ COMPONENTS (LWC) │
 │    Actions   │                  │   gRPC Routes    │                    │ • HITL Exception │
-│  • Custom    │                  • Service-Now      │                    │   Review Screen  │
+│  • Custom    │                  │ • Service-Now    │                    │   Review Screen  │
 │    Logic     │                  │   Sync           │                    │ • Agent Telemetry│
 └───────┬──────┘                  └────────┬─────────┘                    └────────┬─────────┘
         │                                  │                                       │
