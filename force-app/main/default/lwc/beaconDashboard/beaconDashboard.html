@@ -2,7 +2,8 @@
     <lightning-card title="Beacon - Agentic GRC Control Tower" icon-name="standard:einstein_replies">
         <div slot="actions">
             <lightning-button variant="neutral" label="Reset demo" onclick={handleReset} disabled={busy} class="slds-m-right_x-small"></lightning-button>
-            <lightning-button variant="brand" label="Run agent on new findings" onclick={handleRun} disabled={busy}></lightning-button>
+            <lightning-radio-group name="prompt" label="Prompt" variant="label-hidden" type="button" options={promptOptions} value={prompt} onchange={handlePrompt} class="slds-m-right_x-small"></lightning-radio-group>
+            <lightning-button variant="brand" label={runAllLabel} onclick={handleRun} disabled={busy}></lightning-button>
         </div>
         <div class="slds-p-horizontal_medium">
             <template if:true={error}><p class="slds-text-color_error slds-m-bottom_small">{error}</p></template>
@@ -20,7 +21,43 @@
                 </div>
             </template>
             <c-beacon-agent-console onagentdone={handleDone}></c-beacon-agent-console>
-            <lightning-datatable key-field="id" data={rows} columns={columns} hide-checkbox-column onrowaction={handleRowAction}></lightning-datatable>
+            <lightning-tabset>
+                <lightning-tab label="Finding queue">
+                    <lightning-datatable key-field="id" data={rows} columns={columns} hide-checkbox-column onrowaction={handleRowAction}></lightning-datatable>
+                </lightning-tab>
+                <lightning-tab label="V1 vs V2 Lab">
+                    <template if:true={summary}>
+                        <p class="slds-m-bottom_small">{headline}</p>
+                        <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_medium">
+                            <template for:each={metrics} for:item="m">
+                                <div key={m.label} class="slds-col slds-size_1-of-3 slds-m-bottom_small">
+                                    <div class="slds-box slds-box_x-small">
+                                        <p class="slds-text-color_weak">{m.label}</p>
+                                        <p>v1 <b>{m.a}</b></p><lightning-progress-bar value={m.pa} size="small"></lightning-progress-bar>
+                                        <p>v2 <b>{m.b}</b></p><lightning-progress-bar value={m.pb} size="small"></lightning-progress-bar>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <lightning-datatable key-field="id" data={cmpRows} columns={cmpColumns} hide-checkbox-column onrowaction={handleCmpAction}></lightning-datatable>
+                        <template if:true={detail}>
+                            <h3 class="slds-text-heading_small slds-m-top_medium slds-m-bottom_small">{detailTitle}</h3>
+                            <div class="slds-grid slds-gutters">
+                                <template for:each={detailCols} for:item="c">
+                                    <div key={c.key} class="slds-col slds-size_1-of-2">
+                                        <div class="slds-box slds-box_x-small">
+                                            <p class="slds-text-heading_small">{c.title} &middot; {c.status}</p>
+                                            <template for:each={c.rows} for:item="r"><p key={r.k}><span class="slds-text-color_weak">{r.k}:</span> <b>{r.v}</b></p></template>
+                                            <template for:each={c.steps} for:item="s"><p key={s.k} class="slds-text-color_weak">{s.k} &rarr; {s.v}</p></template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </template>
+                    <p class="slds-text-color_weak slds-m-top_small">What-if view: both versions are evaluated in memory for every finding, so the queue and KPIs are never changed and no reset is needed. Use the Prompt switch plus the Run buttons to commit a version.</p>
+                </lightning-tab>
+            </lightning-tabset>
         </div>
     </lightning-card>
 </template>

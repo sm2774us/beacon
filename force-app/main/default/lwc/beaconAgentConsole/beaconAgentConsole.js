@@ -5,7 +5,7 @@ export default class BeaconAgentConsole extends LightningElement {
     draft = '';
     busy = false;
     seq = 0;
-    quick = ['triage E-1002', 'triage E-1010', 'approve E-1002', 'triage all new', 'status', 'reset'];
+    quick = ['triage E-1002 with v1', 'triage E-1002 with v2', 'compare E-1002', 'compare all', 'triage all new', 'approve E-1002', 'status', 'reset'];
     messages = [{ id: 0, who: 'Agent', text: 'Hi, I triage security findings. Try a quick prompt below.', steps: [] }];
 
     handleChange(e) { this.draft = e.target.value; }

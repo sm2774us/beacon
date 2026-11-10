@@ -11,12 +11,26 @@ public with sharing class BeaconKpiController {
         return BeaconApiRest.queue();
     }
 
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
+    public static Map<String, Object> getCompare() {
+        return BeaconApiRest.compare();
+    }
+
     public static Integer triageNew() {
+        return triageAll('v2', false);
+    }
+
+    /** Runs the agent with the chosen prompt version. includeTriaged=true re-runs everything not yet approved/rejected (switch version with no reset). */
+    @AuraEnabled
+    public static Integer triageAll(String ver, Boolean includeTriaged) {
         List<BeaconTriageAction.Request> reqs = new List<BeaconTriageAction.Request>();
-        for (Finding__c f : [SELECT Id FROM Finding__c WHERE Status__c = 'New' WITH USER_MODE LIMIT 200]) {
+        List<Finding__c> fs = includeTriaged == true
+            ? [SELECT Id FROM Finding__c WHERE Status__c NOT IN ('Approved', 'Rejected') WITH USER_MODE LIMIT 200]
+            : [SELECT Id FROM Finding__c WHERE Status__c = 'New' WITH USER_MODE LIMIT 200];
+        for (Finding__c f : fs) {
             BeaconTriageAction.Request q = new BeaconTriageAction.Request();
             q.findingId = f.Id;
+            q.promptVersion = ver;
             reqs.add(q);
         }
         if (!reqs.isEmpty()) { BeaconTriageAction.triage(reqs); }
@@ -24,8 +38,8 @@ public with sharing class BeaconKpiController {
     }
 
     @AuraEnabled
-    public static void triageOne(String ref) {
-        try { triageByRef(ref); } catch (BeaconException e) { throw aura(e.getMessage()); }
+    public static void triageOne(String ref, String ver) {
+        try { triageByRef(ref, ver); } catch (BeaconException e) { throw aura(e.getMessage()); }
     }
 
     @AuraEnabled
@@ -45,9 +59,14 @@ public with sharing class BeaconKpiController {
     }
 
     public static void triageByRef(String ref) {
+        triageByRef(ref, 'v2');
+    }
+
+    public static void triageByRef(String ref, String ver) {
         Finding__c f = findFinding(ref);
         BeaconTriageAction.Request q = new BeaconTriageAction.Request();
         q.findingId = f.Id;
+        q.promptVersion = ver;
         BeaconTriageAction.triage(new List<BeaconTriageAction.Request>{ q });
     }
 

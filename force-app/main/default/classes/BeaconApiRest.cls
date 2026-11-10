@@ -13,6 +13,7 @@ global with sharing class BeaconApiRest {
 
     @HttpGet
     global static void doGet() {
+        if (RestContext.request.requestURI.endsWith('/compare')) { respond(compare()); return; }
         respond(state());
     }
 
@@ -23,7 +24,10 @@ global with sharing class BeaconApiRest {
         String op = p[0];
         try {
             if (op == 'reset') { BeaconSeed.reset(); }
-            else if (op == 'triage' && p.size() > 1) { BeaconKpiController.triageByRef(p[1]); }
+            else if (op == 'triage' && p.size() > 1) {
+                String ver = RestContext.request.params.get('prompt');
+                BeaconKpiController.triageByRef(p[1], ver);
+            }
             else if (op == 'decision' && p.size() > 2) { BeaconKpiController.decideByRef(p[1], p[2]); }
             else {
                 RestContext.response.statusCode = 404;
@@ -47,7 +51,7 @@ global with sharing class BeaconApiRest {
         Map<Id, Asset__c> assets = new Map<Id, Asset__c>([SELECT Id, Tier__c, Contains_PII__c, Internet_Facing__c FROM Asset__c WITH USER_MODE]);
         Map<Id, Control__c> controls = new Map<Id, Control__c>([SELECT Id, Name, Control_Code__c, Framework__c, Criticality__c, Owner_Team__c FROM Control__c WITH USER_MODE]);
         Map<Id, Agent_Run__c> runs = new Map<Id, Agent_Run__c>();
-        for (Agent_Run__c ar : [SELECT Finding__c, Minutes_Saved__c FROM Agent_Run__c WITH USER_MODE ORDER BY CreatedDate ASC]) { runs.put(ar.Finding__c, ar); }
+        for (Agent_Run__c ar : [SELECT Finding__c, Minutes_Saved__c, Prompt_Version__c FROM Agent_Run__c WITH USER_MODE ORDER BY CreatedDate ASC]) { runs.put(ar.Finding__c, ar); }
         List<Finding__c> fs = [SELECT Id, Name, External_Id__c, Title__c, Description__c, Source__c, Severity__c, Status__c, Asset_Ref__c, Control_Ref__c, Asset__c, Control__c
                                FROM Finding__c WITH USER_MODE ORDER BY External_Id__c ASC];
 
@@ -62,14 +66,15 @@ global with sharing class BeaconApiRest {
             };
             Agent_Run__c run = runs.get(f.Id);
             if (st != 'New' && run != null) {
-                BeaconTriageEngine.Result r = BeaconTriageEngine.triage(f, assets.get(f.Asset__c), controls.get(f.Control__c));
+                String pv = run.Prompt_Version__c == 'v1' ? 'v1' : 'v2';
+                BeaconTriageEngine.Result r = BeaconTriageEngine.triage(f, assets.get(f.Asset__c), controls.get(f.Control__c), pv);
                 List<Map<String, Object>> steps = new List<Map<String, Object>>();
                 for (BeaconTriageEngine.Step s : r.steps) {
                     steps.add(new Map<String, Object>{ 'tool' => s.tool, 'input' => s.input, 'output' => s.output, 'ms' => s.ms });
                 }
                 Decimal saved = run.Minutes_Saved__c == null ? 0 : run.Minutes_Saved__c;
                 m.put('run', new Map<String, Object>{
-                    'findingId' => f.External_Id__c, 'promptVersion' => 'v2', 'category' => r.category, 'score' => r.score, 'band' => r.band,
+                    'findingId' => f.External_Id__c, 'promptVersion' => pv, 'category' => r.category, 'score' => r.score, 'band' => r.band,
                     'confidence' => r.confidence.doubleValue(), 'status' => st, 'guardrails' => r.guardrails, 'recommendation' => r.recommendation,
                     'steps' => steps, 'latencyMs' => r.latencyMs, 'tokens' => r.tokens, 'minutesSaved' => saved.doubleValue(), 'owner' => r.owner
                 });
@@ -112,6 +117,69 @@ global with sharing class BeaconApiRest {
         return new Map<String, Object>{ 'findings' => items, 'kpis' => kpis, 'pipeline' => pipe, 'quarantine' => quarantine, 'source' => 'salesforce' };
     }
 
+    class Agg {
+        Integer pass = 0; Integer auto = 0; Integer asg = 0; Integer pend = 0; Integer blk = 0; Integer other = 0; Integer n = 0;
+        Decimal score = 0; Decimal conf = 0; Decimal mins = 0; Long lat = 0; Long tok = 0;
+        void add(BeaconTriageEngine.Result r, Boolean ok) {
+            n++; score += r.score; conf += r.confidence; mins += r.minutesSaved; lat += r.latencyMs; tok += r.tokens;
+            if (ok) { pass++; }
+            if (r.category == 'other') { other++; }
+            if (r.status == 'Auto-Closed') { auto++; } else if (r.status == 'Assigned') { asg++; }
+            else if (r.status == 'Pending Approval') { pend++; } else if (r.status == 'Blocked') { blk++; }
+        }
+        Map<String, Object> out(Integer golden) {
+            Decimal d = n == 0 ? 1 : Decimal.valueOf(n);
+            return new Map<String, Object>{
+                'passRate' => golden > 0 ? (Decimal.valueOf(pass) * 100 / golden).setScale(1, RoundingMode.HALF_UP).doubleValue() : 0.0,
+                'passed' => pass, 'total' => golden, 'autoClosed' => auto, 'assigned' => asg, 'pending' => pend, 'blocked' => blk,
+                'avgScore' => (score / d).setScale(1, RoundingMode.HALF_UP).doubleValue(), 'avgConfidence' => (conf / d).setScale(2, RoundingMode.HALF_UP).doubleValue(),
+                'avgLatencyMs' => Math.roundToLong((lat / d).doubleValue()).intValue(), 'avgTokens' => Math.roundToLong((tok / d).doubleValue()).intValue(),
+                'avgMinutesSaved' => (mins / d).setScale(1, RoundingMode.HALF_UP).doubleValue(), 'hoursSaved' => (mins / 60).setScale(2, RoundingMode.HALF_UP).doubleValue(),
+                'otherBucket' => other
+            };
+        }
+    }
+
+    static Map<String, Object> view(BeaconTriageEngine.Result r, Boolean ok) {
+        List<Map<String, Object>> steps = new List<Map<String, Object>>();
+        for (BeaconTriageEngine.Step s : r.steps) { steps.add(new Map<String, Object>{ 'tool' => s.tool, 'output' => s.output, 'ms' => s.ms }); }
+        return new Map<String, Object>{
+            'category' => r.category, 'score' => r.score, 'band' => r.band, 'confidence' => r.confidence.doubleValue(),
+            'status' => UI.containsKey(r.status) ? UI.get(r.status) : r.status, 'guardrails' => r.guardrails, 'latencyMs' => r.latencyMs, 'tokens' => r.tokens,
+            'minutesSaved' => r.minutesSaved.doubleValue(), 'owner' => r.owner, 'pass' => ok, 'steps' => steps
+        };
+    }
+
+    /** What-if: triage EVERY finding with BOTH prompt versions in memory (no DML), so the demo never needs a reset. Same JSON shape as GET /api/compare locally. */
+    public static Map<String, Object> compare() {
+        Map<Id, Asset__c> assets = new Map<Id, Asset__c>([SELECT Id, Tier__c, Contains_PII__c, Internet_Facing__c FROM Asset__c WITH USER_MODE]);
+        Map<Id, Control__c> controls = new Map<Id, Control__c>([SELECT Id, Name, Control_Code__c, Framework__c, Criticality__c, Owner_Team__c FROM Control__c WITH USER_MODE]);
+        List<Finding__c> fs = [SELECT Id, External_Id__c, Title__c, Description__c, Severity__c, Asset_Ref__c, Control_Ref__c, Asset__c, Control__c
+                               FROM Finding__c WITH USER_MODE ORDER BY External_Id__c ASC];
+        Agg a1 = new Agg(); Agg a2 = new Agg();
+        Integer golden = 0; Integer catChanged = 0; Integer outChanged = 0;
+        List<Map<String, Object>> rows = new List<Map<String, Object>>();
+        for (Finding__c f : fs) {
+            BeaconTriageEngine.Result r1 = BeaconTriageEngine.triage(f, assets.get(f.Asset__c), controls.get(f.Control__c), 'v1');
+            BeaconTriageEngine.Result r2 = BeaconTriageEngine.triage(f, assets.get(f.Asset__c), controls.get(f.Control__c), 'v2');
+            String exp = BeaconTriageEngine.GOLDEN.get(f.External_Id__c);
+            if (exp != null) { golden++; }
+            Boolean ok1 = exp != null && r1.category == exp;
+            Boolean ok2 = exp != null && r2.category == exp;
+            a1.add(r1, ok1); a2.add(r2, ok2);
+            Boolean cc = r1.category != r2.category;
+            Boolean oc = r1.status != r2.status;
+            if (cc) { catChanged++; }
+            if (oc) { outChanged++; }
+            rows.add(new Map<String, Object>{
+                'id' => f.External_Id__c, 'title' => f.Title__c, 'severity' => f.Severity__c, 'description' => f.Description__c, 'expected' => exp,
+                'v1' => view(r1, ok1), 'v2' => view(r2, ok2), 'categoryChanged' => cc, 'outcomeChanged' => oc
+            });
+        }
+        return new Map<String, Object>{ 'rows' => rows, 'summary' => new Map<String, Object>{
+            'v1' => a1.out(golden), 'v2' => a2.out(golden), 'categoryChanged' => catChanged, 'outcomeChanged' => outChanged, 'total' => fs.size() } };
+    }
+
     /** Rows for the LWC data table. */
     public static List<Map<String, Object>> queue() {
         List<Map<String, Object>> rows = new List<Map<String, Object>>();
@@ -122,7 +190,8 @@ global with sharing class BeaconApiRest {
                 'id' => f.get('id'), 'name' => f.get('name'), 'title' => f.get('title'), 'severity' => f.get('severity'), 'status' => st,
                 'category' => run == null ? (Object) '' : run.get('category'), 'score' => run == null ? (Object) null : run.get('score'),
                 'recommendation' => run == null ? (Object) '' : run.get('recommendation'),
-                'notRunnable' => st != 'New', 'notPending' => st != 'PENDING_APPROVAL'
+                'promptVersion' => run == null ? (Object) '' : run.get('promptVersion'),
+                'notRunnable' => st == 'APPROVED' || st == 'REJECTED', 'notPending' => st != 'PENDING_APPROVAL'
             });
         }
         return rows;

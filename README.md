@@ -70,5 +70,6 @@ Simulated numbers (latency, minutes saved) are illustrative model assumptions, n
 ## Prompt v1 vs v2 comparison (added)
 - Mission Control: the **v1 / v2** switch now drives every run (and stays in sync); any finding can be **re-run** with the other version.
 - **Compare v1 vs v2** (per finding, side panel) and the **V1 vs V2 Lab** tab run both versions on all findings as a what-if, with no reset and no change to the live queue or KPIs. API: `GET /api/compare`.
-- Local mode only: the Salesforce org path (Apex) still runs prompt v2.
+- Salesforce parity: `BeaconTriageAction` takes an optional `promptVersion` (v1/v2), `Agent_Run__c.Prompt_Version__c` records it, `GET /beacon/api/compare` and `BeaconKpiController.getCompare` mirror `/api/compare`, and the Lightning dashboard has a v1/v2 switch, Re-run buttons and a **V1 vs V2 Lab** tab. The Agent Console understands `triage E-1002 with v1`, `compare E-1002`, `compare all`.
+- Tests: `npm test` runs 19 Node tests incl. adversarial guardrail cases (injection variants, injection vs Critical precedence, Critical at confidence 1.0, PII on a Low finding, confidence boundaries, invariants over both prompt versions) and 10 Apex tests. Apex tests were written but not executed here: run `run-tests.bat` / `sf apex run test` before relying on them.
 - Latency is simulated and identical across versions by design; the classifier is a keyword stub.

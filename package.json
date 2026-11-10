@@ -8,6 +8,6 @@
     "start": "node local/server.js",
     "demo:cli": "node local/cli/demo.js",
     "demo:cli:fast": "node local/cli/demo.js --fast",
-    "test": "node --test local/test/engine.test.js"
+    "test": "node --test local/test/engine.test.js local/test/guardrails.test.js"
   }
 }

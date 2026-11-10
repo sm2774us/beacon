@@ -12,9 +12,11 @@ const state = () => { const s = store.get(); return { findings: s.findings.map(f
 async function orgRoute(req, res, p) { // live mode: proxy to the Salesforce org (single source of truth)
   let m;
   if (p === '/api/state') return json(res, await sf.call(SF_ORG, 'state'));
+  if (p === '/api/compare') return json(res, await sf.call(SF_ORG, 'compare'));
   if (p === '/api/reset' && req.method === 'POST') return json(res, await sf.call(SF_ORG, 'reset', 'POST'));
   if ((m = p.match(/^\/api\/findings\/([^/]+)\/run$/)) && req.method === 'POST') {
-    const st = await sf.call(SF_ORG, 'triage/' + encodeURIComponent(m[1]), 'POST'); const f = st.findings.find(x => x.id === m[1]);
+    const pv = new URL(req.url, 'http://x').searchParams.get('prompt') === 'v1' ? 'v1' : 'v2';
+    const st = await sf.call(SF_ORG, 'triage/' + encodeURIComponent(m[1]) + '?prompt=' + pv, 'POST'); const f = st.findings.find(x => x.id === m[1]);
     return json(res, { run: f && f.run, kpis: st.kpis });
   }
   if ((m = p.match(/^\/api\/findings\/([^/]+)\/(approve|reject)$/)) && req.method === 'POST') {
@@ -26,7 +28,7 @@ async function orgRoute(req, res, p) { // live mode: proxy to the Salesforce org
 http.createServer(async (req, res) => {
   const u = new URL(req.url, 'http://x'), p = u.pathname;
   if (p === '/api/mode') { let url = ''; if (sf) { try { url = (await sf.getAuth(SF_ORG)).url; } catch (e) { url = 'NOT CONNECTED: ' + e.message; } } return json(res, { mode: sf ? 'salesforce' : 'local', org: SF_ORG, url }); }
-  if (sf && p.startsWith('/api/') && p !== '/api/evals' && p !== '/api/compare') {
+  if (sf && p.startsWith('/api/') && p !== '/api/evals') {
     try { const r = await orgRoute(req, res, p); if (r !== false) return; } catch (e) { return json(res, { error: e.message }, e.status || 502); }
   }
   if (p === '/api/state') return json(res, state());

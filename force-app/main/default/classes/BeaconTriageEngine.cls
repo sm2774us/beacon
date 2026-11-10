@@ -1,5 +1,5 @@
 /**
- * Triage rules. Mirrors local/lib/engine.js (prompt v2): same weights, thresholds, guardrails, step trace and latency model,
+ * Triage rules. Mirrors local/lib/engine.js (prompt v1 AND v2): same weights, thresholds, guardrails, step trace and latency model,
  * so the Lightning app and the local console show identical numbers.
  */
 public with sharing class BeaconTriageEngine {
@@ -29,6 +29,14 @@ public with sharing class BeaconTriageEngine {
         'malware' => 10, 'exposure' => 8, 'identity' => 8, 'privilege' => 8, 'phishing' => 5, 'drift' => 3, 'benign' => -25, 'other' => 0
     };
     static final List<String> CATS = new List<String>{ 'malware', 'phishing', 'identity', 'exposure', 'privilege', 'drift' };
+    static final Map<String, List<String>> KW_V1 = new Map<String, List<String>>{
+        'malware' => new List<String>{ 'malware', 'ransomware', 'c2 beacon' },
+        'phishing' => new List<String>{ 'phish' },
+        'identity' => new List<String>(),
+        'exposure' => new List<String>{ 'exposed' },
+        'privilege' => new List<String>{ 'sudo', 'admin role' },
+        'drift' => new List<String>{ 'drift' }
+    };
     static final Map<String, List<String>> KW = new Map<String, List<String>>{
         'malware' => new List<String>{ 'malware', 'ransomware', 'c2 ' },
         'phishing' => new List<String>{ 'phish', 'credential harvest' },
@@ -52,12 +60,18 @@ public with sharing class BeaconTriageEngine {
 
     /** Returns {category, why}. */
     public static List<String> classifyDetail(String text) {
+        return classifyDetail(text, 'v2');
+    }
+
+    /** Prompt-version aware classifier. v1: smaller vocabulary and no negation pre-check. v2: full vocabulary plus negation. */
+    public static List<String> classifyDetail(String text, String ver) {
         String t = (text == null ? '' : text).toLowerCase();
-        if (NEGATION.matcher(t).find()) {
+        Map<String, List<String>> kws = ver == 'v1' ? KW_V1 : KW;
+        if (ver != 'v1' && NEGATION.matcher(t).find()) {
             return new List<String>{ 'benign', 'Negation pattern found; treated as false positive.' };
         }
         for (String c : CATS) {
-            for (String k : KW.get(c)) {
+            for (String k : kws.get(c)) {
                 if (t.contains(k)) { return new List<String>{ c, 'Matched "' + k + '" -> ' + c }; }
             }
         }
@@ -86,6 +100,18 @@ public with sharing class BeaconTriageEngine {
     }
 
     public static Result triage(Finding__c f, Asset__c asset, Control__c control) {
+        return triage(f, asset, control, 'v2');
+    }
+
+    /** Golden labels (expected category per event id) used by the eval harness and the v1 vs v2 comparison. */
+    public static final Map<String, String> GOLDEN = new Map<String, String>{
+        'E-1001' => 'identity', 'E-1002' => 'exposure', 'E-1003' => 'benign', 'E-1004' => 'drift', 'E-1005' => 'privilege', 'E-1006' => 'phishing',
+        'E-1007' => 'exposure', 'E-1008' => 'malware', 'E-1009' => 'other', 'E-1010' => 'other', 'E-1011' => 'exposure', 'E-1012' => 'other',
+        'E-1013' => 'privilege', 'E-1014' => 'other'
+    };
+
+    public static Result triage(Finding__c f, Asset__c asset, Control__c control, String ver) {
+        String pv = ver == 'v1' ? 'v1' : 'v2';
         Result r = new Result();
         String id = f.External_Id__c == null ? '' : f.External_Id__c;
         String descText = f.Description__c == null ? '' : f.Description__c;
@@ -96,9 +122,9 @@ public with sharing class BeaconTriageEngine {
             asset == null ? 'UNKNOWN ASSET' : 'tier ' + asset.Tier__c.intValue() + ', pii=' + asset.Contains_PII__c + ', internet=' + asset.Internet_Facing__c, 60);
         addStep(r, id, 'lookup_control', f.Control_Ref__c == null ? '' : f.Control_Ref__c,
             control == null ? 'UNMAPPED CONTROL' : control.Framework__c + ' ' + control.Control_Code__c + ' ' + control.Name + ' (criticality ' + control.Criticality__c.intValue() + ')', 45);
-        List<String> cl = classifyDetail(text);
+        List<String> cl = classifyDetail(text, pv);
         r.category = cl[0];
-        addStep(r, id, 'classify_llm', 'prompt v2', cl[1], 420);
+        addStep(r, id, 'classify_llm', 'prompt ' + pv, cl[1], 420);
 
         Integer score = SEV.get(f.Severity__c) * 10 + BONUS.get(r.category);
         if (control != null && control.Criticality__c != null) { score += control.Criticality__c.intValue(); }

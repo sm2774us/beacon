@@ -947,7 +947,7 @@ pie showData
 | **Evals** | 64.3% to 100% | 9 of 14 to 14 of 14; CI gate at 95% |
 | **ROI model** | 4,000 / 70% / $85 / $6,000 | volume, in scope, hourly cost, monthly run cost |
 | **ROI result** | 635 h, $53.9K, $47.9K net, about 800% | modelled; half volume still above 350% |
-| **Tests** | 8 Node, 7 Apex | the whiteboard slides mention 5 Apex tests; update to 7 |
+| **Tests** | 19 Node (engine, adversarial guardrails, v1/v2 compare), 10 Apex | keep slides in sync with these counts |
 | **Resume** | 17+ yrs, 99.2%, under 5 days, about 50%, 25-40% travel, 5 repos | experience, reliability, MVP speed, AI-assisted speedup, onsite share, open source |
 
 [Back to contents](#toc)
