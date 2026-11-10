@@ -27,18 +27,18 @@
 
 ## 2. Table of Contents
 
-1. [Synopsis](#1-synopsis)
-2. [Table of Contents](#2-table-of-contents)
-3. [Three Use Cases (chronological)](#3-three-use-cases-chronological)
-   - [UC1 — Millburn: Real-time compliance decision engine](#uc1--millburn-ridgefield-2008-2022-real-time-b2b-compliance-decision-engine)
-   - [UC2 — J.P. Morgan AM / Highbridge: Exception-triage agent on GRC](#uc2--jp-morgan-am--highbridge-2022-2025-risk--ops-exception-triage-agent)
+1. [Synopsis](#1--synopsis)
+2. [Table of Contents](#2--table-of-contents)
+3. [Three Use Cases (chronological)](#3--three-use-cases-chronological)
+   - [UC1 — Millburn: Real-time compliance decision engine](#uc1--millburn-ridgefield-20082022-real-time-b2b-compliance-decision-engine)
+   - [UC2 — J.P. Morgan AM / Highbridge: Exception-triage agent on GRC](#uc2--jp-morgan-am--highbridge-20222025-risk--ops-exception-triage-agent)
    - [UC3 — Balyasny: GRC/SOC agent on Agentforce + Data 360](#uc3--balyasny-2025present-grcsoc-agentic-platform-on-agentforce--data-360)
 4. [Detailed Answers](#4-detailed-answers)
    - [Behavioral](#41-behavioral-q1q3) — [Q1](#q1-most-challenging-project-why-and-how-did-you-contribute) · [Q2](#q2-project-most-proud-of-and-your-role) · [Q3](#q3-how-do-you-disagree-with-a-sponsor-and-still-fulfil-requirements)
    - [Technical](#42-technical)
-     - [Salesforce portfolio](#q-salesforce-product-portfolio-where-used-pros--cons) · [Apex actions](#q-explain-apex-actions-and-how-you-used-them) · [Agentforce](#q-explain-agentforce-and-how-you-used-it) · [LWC](#q-explain-lwc-and-how-you-used-it) · [Claudeforce](#q-claudeforce-what-is-it-and-where-would-you-use-it)
+     - [Salesforce portfolio](#q-salesforce-product-portfolio--where-used-pros--cons) · [Apex actions](#q-explain-apex-actions-and-how-you-used-them) · [Agentforce](#q-explain-agentforce-and-how-you-used-it) · [LWC](#q-explain-lwc-and-how-you-used-it) · [Claudeforce](#q-claudeforce--what-is-it-and-where-would-you-use-it)
      - [Governor limits](#q-how-do-you-stay-inside-governor-limits) · [Security](#q-how-is-security-enforced) · [REST endpoint](#q-walk-me-through-a-rest-endpoint) · [Testing / golden set](#q-how-do-you-test-an-agent-golden-set) · [Hallucination](#q-how-do-you-mitigate-hallucination-and-non-determinism)
-     - [Harden first](#q-what-would-you-harden-first) · [Data pipelines](#q-data-pipelines-to-snowflake-databricks-data-360) · [Integration patterns](#q-integration-patterns-you-would-choose-and-why) · [100x volume](#q-what-happens-at-100x-volume-and-how-to-mitigate) · [Prompt failed](#q-llm-prompt-failed-why-and-what-would-you-change)
+     - [Harden first](#q-what-would-you-harden-first) · [Data pipelines](#q-data-pipelines-to-snowflake-databricks-data-360) · [Integration patterns](#q-integration-patterns-you-would-choose-and-why) · [100x volume](#q-what-happens-at-100x-volume-and-how-to-mitigate) · [Prompt failed](#q-llm-prompt-failed--why-and-what-would-you-change)
 5. [Bonus: 15-Minute Run-of-Show, Ambiguity vs. Uncertainty, ROI Formula](#5-bonus-15-minute-run-of-show-ambiguity-vs-uncertainty-roi-formula)
 
 ---
