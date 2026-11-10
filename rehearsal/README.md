@@ -4,6 +4,24 @@
 **Interview:** Salesforce final round, 45 minutes, 2:1, Google Meet (candidate at the Salesforce NYC office, both interviewers remote)
 **Interviewers:** Kaytie Zimmerman (VP, Forward Deployed Engineering) and Anand Narayan (Deployment Strategist Director)
 
+---
+
+## Table of Contents
+
+1. [Presentation Files](#presentation-files)
+2. [Interview Context and Overall Strategy](#interview-context-and-overall-strategy)
+3. [Presentation 1 — `SALESFORCE_FINAL_ROUND_PRESENTATION.pptx`](#presentation-1--salesforce_final_round_presentationpptx-use-presentation-2-for-the-interview-and-fallback-on-this-only-if-needed)
+4. **[Presentation 2 — `SALESFORCE_FINAL_ROUND_OPEN_SOURCE_DEMO.pptx` (MAIN SLIDE)](#presentation-2--salesforce_final_round_open_source_demopptx)**
+5. [Consolidated Interview Q&A](#consolidated-interview-qa)
+6. [Presentation Timing and Rehearsal Strategy](#presentation-timing-and-rehearsal-strategy-salesforce_final_round_open_source_demopptx)
+7. [Final Cross-Presentation Interview Preparation](#final-cross-presentation-interview-preparation)
+
+[⬆️ Back to top](#table-of-contents)
+
+---
+
+## Presentation Files
+
 **Slide references used below:** `P1-S#` = slide # of `SALESFORCE_FINAL_ROUND_PRESENTATION`; `P2-S#` = slide # of `SALESFORCE_FINAL_ROUND_OPEN_SOURCE_DEMO`.
 
 **Which version this script follows:** the **enhanced** copies, `SALESFORCE_FINAL_ROUND_PRESENTATION_ENHANCED.pptx` and `SALESFORCE_FINAL_ROUND_OPEN_SOURCE_DEMO_ENHANCED.pptx`. Slide count, order, numbering and titles are identical to the originals; the originals were not modified. The enhancements (all small, all listed in the table below) change no claim except to make one wording more honest.
@@ -25,6 +43,8 @@ Slides that were already strong and left alone: P1-S3, S8, S9, S11, S12, S13 (la
 > **Two items to verify before the interview (I could not check them from the files):**
 > 1. The per-outcome analyst minutes behind 13.6 min (I reconstructed them from the P2-S4 chart: 0.5 / 4 / 6 / 18, which reproduces 13.57 ≈ 13.6 exactly). Confirm in the Beacon repo.
 > 2. Current Salesforce product names (Agentforce, Agentforce Vibes, Data 360, Testing Center, Prompt Builder, Trust Layer). Names change; P2-S16's own notes say the same.
+
+[⬆️ Back to top](#table-of-contents)
 
 ---
 
@@ -75,9 +95,11 @@ Every answer should land on one of those three, with one concrete example from B
 - **May not claim:** that Beacon ran at a customer; that the 13.6 minutes or the $48K are measured outcomes; that the classifier is an LLM; that Agentforce is a deep strength (say "ramping"); anything about a customer's metrics that is not on a slide.
 - **When asked about something not on a slide**, use this pattern: *"What I've done is X. What I would do here is Y, and here is how I'd validate it."* This separates fact from proposal without sounding weak.
 
+[⬆️ Back to top](#table-of-contents)
+
 ---
 
-## Presentation 1 — `SALESFORCE_FINAL_ROUND_PRESENTATION__1_.pptx` (use the enhanced copy)
+## Presentation 1 — `SALESFORCE_FINAL_ROUND_PRESENTATION.pptx` (use Presentation 2 for the interview and fallback on this only if needed)
 
 ### 1. Presentation Overview
 
@@ -680,9 +702,11 @@ Rehearsal plan: (1) read S7, S9, S12, S13, S15 aloud twice; (2) record yourself 
 **Risks to prepare:** (1) Agentforce claim consistency between S4 and S7; (2) the 99.2% and "50% faster" figures need defined denominators/comparisons; (3) onsite percentages are approximations; (4) one real stakeholder story is needed for S7/S8; (5) S10's phase chart is illustrative.
 **Readiness:** high on structure and content; moderate until the two items above are rehearsed with specifics.
 
+[⬆️ Back to top](#table-of-contents)
+
 ---
 
-## Presentation 2 — `SALESFORCE_FINAL_ROUND_OPEN_SOURCE_DEMO__1_.pptx` (use the enhanced copy)
+## **Presentation 2 — `SALESFORCE_FINAL_ROUND_OPEN_SOURCE_DEMO.pptx`**
 
 *Enhanced-copy change specific to this deck beyond the table above: on P2-S3 the "AI tools used" line was removed from the "Honest framing" box and from that slide's notes, as requested. Slide count and numbering are unchanged.*
 
@@ -1313,9 +1337,11 @@ With $n=14$, a result of 14/14 supports only a true pass rate $p\ge 0.025^{1/14}
 
 **Transition.** "That's everything; I'm happy to go anywhere you'd like."
 
+[⬆️ Back to top](#table-of-contents)
+
 ---
 
-### 4. Consolidated Interview Q&A (Presentation 2)
+## Consolidated Interview Q&A 
 
 **Q1. Why is the LLM only allowed to classify?** *(Why: architecture and safety.)* "Because classification is the part that benefits from language understanding, and everything else must be auditable. Score, guardrails and routing are deterministic, so a CISO can verify the math and a failure of the model is bounded." *If probed:* what happens when the classifier is wrong (bounded by guardrails; caught by evals/overrides).
 
@@ -1335,7 +1361,11 @@ With $n=14$, a result of 14/14 supports only a true pass rate $p\ge 0.025^{1/14}
 
 **Q9. How did you use AI tools while building it?** *(Why: modern FDE practice, honesty.)* "I use AI-assisted development as part of my workflow and I'm accountable for what ships; I can explain any component. [Prep: agree the exact truthful wording beforehand.]"
 
-### 5. Presentation Timing and Rehearsal Strategy (Presentation 2)
+[⬆️ Back to top](#table-of-contents)
+
+---
+
+## Presentation Timing and Rehearsal Strategy (`SALESFORCE_FINAL_ROUND_OPEN_SOURCE_DEMO.pptx`)
 
 | Slide | Target | Running | Notes |
 |---|---|---|---|
@@ -1367,6 +1397,8 @@ Rehearsal: (1) run the demo end to end three times with a timer; (2) rehearse S5
 **Strengths:** the ambiguity/uncertainty table; the architecture-to-decision logic; guardrails as code; a rare level of honesty (S22) that converts weaknesses into credibility; a clean mapping to Salesforce on S16.
 **Risks:** (1) the stub classifier and 14-case set will be probed, and your answer must be short and unembarrassed; (2) the ROI tab trap; (3) "modelled vs measured" wording discipline; (4) Agentforce hands-on depth; (5) scale and governor-limit questions (designed only); (6) the 13.6-minute derivation (confirm per-outcome minutes in the repo).
 **Readiness:** strong on content and structure. Close the remaining gap by rehearsing the stub, ROI-trap and Agentforce answers aloud.
+
+[⬆️ Back to top](#table-of-contents)
 
 ---
 
@@ -1449,3 +1481,7 @@ One story: *I deliver in customer environments (P1-S2, S5, S10) → I make AI sa
 - **Consistency:** slide numbers and titles match the enhanced files; the enhanced decks validate cleanly and render correctly.
 - **Facts:** no customer results, benchmarks or implementation claims were invented. Items that rely on information outside the files are flagged **[Prep note]**. ROI, half-volume, payback, weighted-minutes and exact-binomial figures were recomputed and match.
 - **Originals:** both original `.pptx` files are untouched.
+
+[⬆️ Back to top](#table-of-contents)
+
+---
