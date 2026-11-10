@@ -41,7 +41,7 @@ Good afternoon, Kaytie and Anand.
   - Whether at Balyasny or J.P. Morgan or Millburn, my motion is the exact one this role demands. I don't build from afar—I embed onsite 40% of the time, 
     partner with Deployment Strategists, and ensure AI infrastructure goes live on day one.
 
-Today, I’m excited to walk you through an enterprise agentic AI solution I built leveraging the **Salesforce Ecosystem**—specifically **Agentforce, Data 360, Apex, Lightning Web Components (LWC), and MuleSoft**. I’ll detail how my cumulative architectural background enabled me to drive a **$4.2M annual operational savings** while reducing compliance cycle times by 84%."
+Today, I’m excited to walk you through an enterprise agentic AI solution I built leveraging the **Salesforce Ecosystem**—specifically **Agentforce, Data 360, Apex, Lightning Web Components (LWC), and MuleSoft**. I’ll detail how my cumulative architectural background enabled me to drive a **$4.2M annual operational savings** while reducing compliance cycle times by 84%.
 
 If they want more then:
 
