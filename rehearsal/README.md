@@ -853,6 +853,16 @@ Facts to hold in your head: 18 events in, 14 accepted, 4 quarantined (duplicate,
 >
 > The triage agent, an Agentforce topic with actions on the platform, calls tools to fetch that context and compute the score. Between its recommendation and any action sit guardrails G1 to G4 and, where needed, a human approval through Flow. Every run writes an Agent_Run record: telemetry. The Control Tower UI, a Lightning Web Component, reads Findings and Agent_Runs to show KPIs and ROI. Underneath, an eval harness runs the golden set in CI, and at scale Data 360 or Snowflake holds history.
 >
+> Regulators and frameworks—such as the NIST AI Risk Management Framework and the **EU AI Act** — mandate that enterprise software must implement "Risk Tiering" or a "Chain of Responsibility".
+
+> Engineers adapt these regulatory buckets into systematic "G-Series" code exceptions to handle them programmatically:
+>   * **G1 (Compliance Gate):** Checks basic legal/privacy baselines (e.g., GDPR/HIPAA compliance via **PII masking**).
+>   * **G2 (Operational Safety Gate):** Checks brand safety or massive system damage (**Critical** failures, prohibited actions, or structural violations).
+>   * **G3 (Statistical Threshold Gate):** Evaluates if the math/probability broke down (**Low Confidence** outputs that fail deterministic scoring rules).
+>   * **G4 (Security/Adversarial Gate):** Identifies active malicious manipulation (**Prompt Injections** or system hijacking attempts).
+>
+> In short, the terms are a synthesis of **Stage-Gate engineering architecture** combined with **regulatory risk tiering**, customized to give developers an explicit blueprint for intercepting bad AI behavior before it reaches a customer.
+>
 > The table shows the same thing locally versus on Salesforce: the Node server maps to an LWC, the engine tools map to an invocable Apex action usable by Agentforce, Flow and REST, and the local POST endpoint maps to an Apex REST resource.
 >
 > Before I show it running, are there any questions on the architecture?"
