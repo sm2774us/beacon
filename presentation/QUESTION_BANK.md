@@ -80,20 +80,19 @@ The business sponsor (SVP of Risk & Compliance) required an intelligent system c
 In my work across **Millburn**, **J.P. Morgan**, and **Balyasny**, I learned to systematically separate requirements into **Ambiguity** (business intent) and **Uncertainty** (technical execution):
 
 ```
-                      HIGH AMBIGUITY
-                            │
-     Quadrant II: Discovery Workshops      │     Quadrant I: Architectural Spikes
-  • Problem: "Smarter Exception Triage"    │  • Problem: "Predicting Regulatory Shift Impact"
-  • Mitigation: Storyboarding, LWC Mockups │  • Mitigation: Agentforce Atlas Reasoning + RAG
-                            │
- ───────────────────────────┼───────────────────────────
-                            │
-    Quadrant III: Direct Execution         │     Quadrant IV: Technical Spikes
-  • Problem: "Fetch Account Ledgers"       │  • Problem: "Data 360 Real-Time Ingestion Limits"
-  • Mitigation: Standard Apex / REST       │  • Mitigation: MuleSoft Async Event Streaming
-                            │
-                      LOW AMBIGUITY
- LOW UNCERTAINTY ───────────────────────── HIGH UNCERTAINTY
+                                        HIGH AMBIGUITY
+                                              │
+     Quadrant II: Discovery Workshops         │     Quadrant I: Architectural Spikes
+  • Problem: "Smarter Exception Triage"       │  • Problem: "Predicting Regulatory Shift Impact"
+  • Mitigation: Storyboarding, LWC Mockups    │  • Mitigation: Agentforce Atlas Reasoning + RAG
+                                              │
+LOW UNCERTAINTY ──────────────────────────────┼───────────────────────────────── HIGH UNCERTAINTY
+                                              │
+    Quadrant III: Direct Execution            │     Quadrant IV: Technical Spikes
+  • Problem: "Fetch Account Ledgers"          │  • Problem: "Data 360 Real-Time Ingestion Limits"
+  • Mitigation: Standard Apex / REST          │  • Mitigation: MuleSoft Async Event Streaming
+                                              │
+                                         LOW AMBIGUITY
 
 ```
 
@@ -130,13 +129,13 @@ In my work across **Millburn**, **J.P. Morgan**, and **Balyasny**, I learned to 
                  ▼                                                         ▼
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
 │                                 SALESFORCE DATA 360                                     │
-│  • Unified Data Library (UDL)    • Real-Time Data Streams    • Calculated Insights          │
+│  • Unified Data Library (UDL)    • Real-Time Data Streams    • Calculated Insights      │
 └──────────────────────────────────────────┬──────────────────────────────────────┬───────┘
                                            │ Data Cloud Connectors                │
                                            ▼                                      ▼
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
 │                                AGENTFORCE REASONING ENGINE                              │
-│  • Atlas Reasoning Engine    • Prompt Templates    • Guardrails & Topic Triggers         │
+│  • Atlas Reasoning Engine    • Prompt Templates    • Guardrails & Topic Triggers        │
 └───────┬──────────────────────────────────┬──────────────────────────────────────┬───────┘
         │ Dynamic Tool Call                │ Invocation                            │ Escalation
         ▼                                  ▼                                       ▼
@@ -245,7 +244,7 @@ To deliver this platform rapidly, I leveraged modern AI-assisted engineering too
 ```
        ┌─────────────────────────────────────────────────────────────┐
        │               VP, FORWARD DEPLOYMENT / SPONSOR              │
-       │   • Aligning Strategic Investment & ROI Business Value       │
+       │   • Aligning Strategic Investment & ROI Business Value      │
        └──────────────────────────────┬──────────────────────────────┘
                                       │ Strategic Alignment
                                       ▼
@@ -305,7 +304,7 @@ To deliver this platform rapidly, I leveraged modern AI-assisted engineering too
   |                                   | (84% Faster Resolution)           |
   | Monthly Ticket Autonomous Rate    | 76% of 14,000+ tickets handled    |
   |                                   | without human intervention        |
-  | Annual Operational Savings        | $4.2M Direct Annual Savings[cite: 2]|
+  | Annual Operational Savings        | $4.2M Direct Annual Savings       |
   | System Accuracy & Compliance Rate | 99.4% Deterministic Accuracy      |
   | Platform Delivery Speed           | MVP Shipped in 4 Days             |
   +-----------------------------------+-----------------------------------+
@@ -407,22 +406,17 @@ I used **Cursor** to debug the prompt telemetry, updated our Apex data transform
 #### Q1: "Why choose Salesforce Agentforce over building a custom microservice wrapper using LangChain, LangGraph, or Python in AWS/Azure?"
 
 * **Optimal Answer Grounded in Past Roles:**
+
 * **Engineering Reality:** At  JP and Balyasny, I built custom multi-agent orchestration frameworks (publicly showcased in my `agentic-platform` and `genai-fde-delivery-platform` GitHub repositories). Building custom wrappers requires months of undifferentiated heavy lifting: building auth layers, audit logging, custom UIs, and data synchronization pipelines.
+
 * **Salesforce Ecosystem Value:** Choosing Agentforce allows an FDE to leverage native platform primitives:
-1. **Data 360 Integration:** Zero-copy unified data models eliminate complex ETL pipelines.
+  1. **Data 360 Integration:** Zero-copy unified data models eliminate complex ETL pipelines.
 
+  2. **Apex & Flow Execution:** Invocable actions connect directly into existing enterprise business logic.
 
-2. **Apex & Flow Execution:** Invocable actions connect directly into existing enterprise business logic.
-
-
-3. **Lightning UI & Service Cloud:** End-users interact within a pre-built CRM interface rather than a custom web app.
-
+  3. **Lightning UI & Service Cloud:** End-users interact within a pre-built CRM interface rather than a custom web app.
 
 * **Business Impact:** This reduces time-to-production from 6 months to **4 days**, perfectly aligning with the FDE mandate to ship real code fast.
-
-
-
-
 
 #### Q2: "Walk us through how you design data pipelines connecting external data warehouses (Snowflake/Databricks) to Salesforce Data 360 for agentic ingestion."
 
