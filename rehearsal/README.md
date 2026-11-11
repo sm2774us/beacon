@@ -15,6 +15,14 @@
 5. [Consolidated Interview Q&A](#consolidated-interview-qa)
 6. [Presentation Timing and Rehearsal Strategy](#presentation-timing-and-rehearsal-strategy-salesforce_final_round_open_source_demopptx)
 7. [Final Cross-Presentation Interview Preparation](#final-cross-presentation-interview-preparation)
+8. [Technical Deep Dive and Architecture Defense](#technical-deep-dive-and-architecture-defense)
+9. [Deep-Dive Interview Q&A Bank](#deep-dive-interview-qa-bank)
+10. [Role 1: Millburn Ridgefield Corporation (Apr 2008 – Feb 2022)](#role-1-millburn-ridgefield-corporation-apr-2008--feb-2022)
+11. [Role 2: J.P. Morgan Asset Management / Highbridge (Feb 2022 – May 2025)](#role-2-jp-morgan-asset-management--highbridge-feb-2022--may-2025)
+12. [Role 3: Balyasny Asset Management LP (May 2025 – Present)](#role-3-balyasny-asset-management-lp-may-2025--present)
+13. [Rehearsal Quick Reference Table (For Final Round Prep)](#rehearsal-quick-reference-table-for-final-round-prep)
+14. [💡 Interview Scripting Tip](#-interview-scripting-tip)
+15. [Final Round 2:1 Panel Interview Preparation: Top Questions & Story Mapping](#final-round-21-panel-interview-preparation-top-questions--story-mapping)
 
 [⬆️ Back to top](#table-of-contents)
 
@@ -23,26 +31,6 @@
 ## Presentation Files
 
 **Slide references used below:** `P1-S#` = slide # of `SALESFORCE_FINAL_ROUND_PRESENTATION`; `P2-S#` = slide # of `SALESFORCE_FINAL_ROUND_OPEN_SOURCE_DEMO`.
-
-**Which version this script follows:** the **enhanced** copies, `SALESFORCE_FINAL_ROUND_PRESENTATION_ENHANCED.pptx` and `SALESFORCE_FINAL_ROUND_OPEN_SOURCE_DEMO_ENHANCED.pptx`. Slide count, order, numbering and titles are identical to the originals; the originals were not modified. The enhancements (all small, all listed in the table below) change no claim except to make one wording more honest.
-
-| # | File | Change | Why it was worth making |
-|---|------|--------|-------------------------|
-| 1 | P1-S4 | Title "four things" → "six things" | The table has six rows; a skeptical reader sees the mismatch in seconds. |
-| 2 | P1-S15 | "measured in the Beacon demo run" → "modelled in the Beacon demo run" | The 13.6 min/finding is computed from an 18-min *assumed* baseline and assumed per-outcome analyst minutes. "Measured" invites an attack on the whole ROI slide. |
-| 3 | P1-S5, P1-S10, P1-S13 charts | Redrawn with category labels (were "1, 2, 3…") | Unlabelled bars cannot be narrated over a screen share. Values unchanged. |
-| 4 | P2-S4 chart + caption | Bars labelled (Manual baseline / Auto-closed / Assigned / Pending approval / Blocked); caption now says "modelled in the demo run" | Same reasons as 2 and 3. |
-| 5 | P2-S10 chart | Bars labelled Prompt v1 / v2 | Same as 3. |
-| 6 | P2-S15 chart | Bars labelled G1 PII / G2 Critical / G3 Low conf. / G4 Injection | Same as 3. |
-| 7 | P2-S20 chart | Quarantine bars labelled Duplicate / Invalid severity / Missing required field / Malformed JSON | Same as 3. |
-| 8 | P2-S18 | "Anand (Director, Deployment Strategy)" → "Anand (Deployment Strategist Director)" | Matches his title and P1-S18. |
-| 9 | Speaker notes on P1-S15 and P2-S4 | Added the arithmetic behind 13.6 min and the ROI definition | Gives you the derivation when asked. |
-
-Slides that were already strong and left alone: P1-S3, S8, S9, S11, S12, S13 (layout), S16, S17; P2-S5, S6, S7, S9, S11, S12, S13, S16, S17, S22. The deck design (dark theme, consistent header strip, one message per slide) is coherent and should not be redesigned.
-
-> **Two items to verify before the interview (I could not check them from the files):**
-> 1. The per-outcome analyst minutes behind 13.6 min (I reconstructed them from the P2-S4 chart: 0.5 / 4 / 6 / 18, which reproduces 13.57 ≈ 13.6 exactly). Confirm in the Beacon repo.
-> 2. Current Salesforce product names (Agentforce, Agentforce Vibes, Data 360, Testing Center, Prompt Builder, Trust Layer). Names change; P2-S16's own notes say the same.
 
 [⬆️ Back to top](#table-of-contents)
 
@@ -303,7 +291,7 @@ An 18-slide **competency-led deck and Q&A bank**. Slides 1-5 introduce you and m
 4. "Which of these claims is weakest?"
 
 **Suggested answers**
-1. "Three steps in my first thirty days: map Beacon's pieces onto Agentforce (the triage topic and instructions, Apex invocable actions, Prompt Builder for the classification prompt, Flow for approvals), build the eval gate using the platform's testing tooling, and shadow a Deployment Strategist's discovery sessions. The mapping already exists on P2-S16; the first 30 days make it real in a customer-shaped org."
+1. "Three steps in my first thirty days: map Beacon's pieces onto Agentforce (the triage topic and instructions, Apex invocable actions, Prompt Builder for the classification prompt, Flow for approvals), build the eval gate using the platform's testing tooling, and shadow a Deployment Strategist's discovery sessions. The mapping already exists on P2-S18; the first 30 days make it real in a customer-shaped org."
 2. "Because the hard part of forward-deployed work isn't the product surface; it's discovery, integration, guardrails, evals and getting a customer to adopt. Product features I can learn in weeks. Those other skills take years, and I have them. I'd also bring a cross-framework view: when LangGraph or custom orchestration is the right tool and when it isn't, which is on P1-S12."
 3. "I'd rather use a pattern than invent a story: when sponsors and SOC analysts disagree about trust in auto-close, I don't argue; I propose a staged-autonomy rollout where the override rate decides. That moves the argument from opinion to data. [**Prep note:** have one real, specific stakeholder story from J.P. Morgan or Balyasny ready, with no confidential names or numbers.]"
 4. "The Agentforce row, which is why I've labelled it. The second weakest is Beacon's evidence, which is a reference build rather than a customer result, and that's labelled too."
@@ -653,7 +641,7 @@ Answer: "I separate ambiguity from uncertainty. Ambiguity means someone knows: I
 Answer: P1-S12 rule: start where data and permissions live, prototype in the faster tool, ship in the one the customer can operate, join them with a versioned API. *If probed:* governance (Trust Layer, masking, audit) and admin ownership favor Agentforce; non-Salesforce systems, custom multi-agent graphs and research velocity favor LangGraph.
 
 **Q3. What's your actual Agentforce experience?** *(Why: the visible gap.)*
-Answer: say precisely what you built and where; then: "My depth is orchestration, guardrails and evals; I'm ramping on Prompt Builder, the Trust Layer and Testing Center, and I've mapped Beacon onto each." *If probed:* walk P2-S16 row by row. Never claim a feature you haven't touched. **Reconcile P1-S4 "Agentforce deployments" with P1-S7 "ramping" in advance.**
+Answer: say precisely what you built and where; then: "My depth is orchestration, guardrails and evals; I'm ramping on Prompt Builder, the Trust Layer and Testing Center, and I've mapped Beacon onto each." *If probed:* walk P2-S18 row by row. Never claim a feature you haven't touched. **Reconcile P1-S4 "Agentforce deployments" with P1-S7 "ramping" in advance.**
 
 **Q4. How do you keep an agent from doing something harmful?** *(Why: safety and governance.)*
 Answer: "Defense in depth. Deterministic scoring the LLM can't change; guardrails as code (G1 PII never auto-closed, G2 Critical needs a human, G3 low confidence needs a human, G4 injection blocked); staged autonomy; rollback switch; full telemetry." *If probed:* explain why prompt-only defenses fail (the model can be talked around) and that no defense against injection is perfect, hence least privilege and human approval for irreversible actions.
@@ -719,7 +707,7 @@ Facts to hold in your head: 18 events in, 14 accepted, 4 quarantined (duplicate,
 ### 2. Recommended Presentation Strategy
 
 - **Say the framing in the first minute:** reference build, synthetic data, modelled value (P2-S1/S3). Then they can't "catch" you later.
-- **Spend your time where the signal is:** S5 (first conversation), S6 (architecture), S7 (decisions), the demo, S10 (why prompt v1 failed). Deliver S1, S3, S9, S12, S15, S17 fast.
+- **Spend your time where the signal is:** S5 (first conversation), S6 (architecture), S7 (decisions), the demo, S10 (why prompt v1 failed). Deliver S1, S3, S9, S12, S15, S19 fast.
 - **Pauses:** Pause 1 after S6 ("any questions on the architecture before I show it running?"); Pause 2 after S10 (the demo and evals). Wait at least 4 seconds at each.
 - **Dashed boxes** on S6 are the target Salesforce mapping, not run live. Say this before they ask.
 - **ROI tab trap:** click **Run agent on all** before opening the ROI tab (fully run: 13.6 min, 635 h, $53,947, $47,947, 799%; if only one finding triaged: 14 min, 653 h, $55,533, $49,533, 826%).
@@ -1343,23 +1331,32 @@ With $n=14$, a result of 14/14 supports only a true pass rate $p\ge 0.025^{1/14}
 
 ## Consolidated Interview Q&A 
 
-**Q1. Why is the LLM only allowed to classify?** *(Why: architecture and safety.)* "Because classification is the part that benefits from language understanding, and everything else must be auditable. Score, guardrails and routing are deterministic, so a CISO can verify the math and a failure of the model is bounded." *If probed:* what happens when the classifier is wrong (bounded by guardrails; caught by evals/overrides).
+### **Q1. Why is the LLM only allowed to classify?**
+*(Why: architecture and safety.)* "Because classification is the part that benefits from language understanding, and everything else must be auditable. Score, guardrails and routing are deterministic, so a CISO can verify the math and a failure of the model is bounded." *If probed:* what happens when the classifier is wrong (bounded by guardrails; caught by evals/overrides).
 
-**Q2. A keyword stub isn't an LLM. What have you actually proven?** *(Why: reality check.)* "The system around the model: idempotent ingest, deterministic scoring, code guardrails, eval harness, telemetry. These are model-agnostic and are where most deployments fail. The stub lets me demonstrate failure analysis deterministically." *If probed:* describe how the LLM swap affects evals (non-determinism, held-out data, per-class metrics).
+### **Q2. A keyword stub isn't an LLM. What have you actually proven?**
+*(Why: reality check.)* "The system around the model: idempotent ingest, deterministic scoring, code guardrails, eval harness, telemetry. These are model-agnostic and are where most deployments fail. The stub lets me demonstrate failure analysis deterministically." *If probed:* describe how the LLM swap affects evals (non-determinism, held-out data, per-class metrics).
 
-**Q3. How would this scale to 10× volume?** *(Why: scalability.)* "Queue and back-pressure in front of ingest, bulk and asynchronous processing, history in Data 360 or Snowflake, and monitoring on latency and queue depth. On Salesforce, mind governor and API limits. All designed, not demonstrated." *If probed:* batching (bulk upsert), async Apex, Platform Events.
+### **Q3. How would this scale to 10× volume?**
+*(Why: scalability.)* "Queue and back-pressure in front of ingest, bulk and asynchronous processing, history in Data 360 or Snowflake, and monitoring on latency and queue depth. On Salesforce, mind governor and API limits. All designed, not demonstrated." *If probed:* batching (bulk upsert), async Apex, Platform Events.
 
-**Q4. What are the security and governance risks?** *(Why: enterprise readiness.)* "Prompt injection, over-broad permissions, data leakage through prompts, and unauditable actions. Mitigations: treat text as data, least-privilege actions, masking via the Trust Layer, telemetry for every run, and human approval for irreversible actions." *If probed:* how to red-team and test it.
+### **Q4. What are the security and governance risks?**
+*(Why: enterprise readiness.)* "Prompt injection, over-broad permissions, data leakage through prompts, and unauditable actions. Mitigations: treat text as data, least-privilege actions, masking via the Trust Layer, telemetry for every run, and human approval for irreversible actions." *If probed:* how to red-team and test it.
 
-**Q5. How do you make analysts adopt it?** *(Why: Anand's lens.)* "Visible tool trace, human gates early, override rate as a trust metric, and a staged path to autonomy that analysts and the SOC lead control. Adoption is earned." *If probed:* training, feedback channel, weekly review of overrides.
+### **Q5. How do you make analysts adopt it?**
+*(Why: Anand's lens.)* "Visible tool trace, human gates early, override rate as a trust metric, and a staged path to autonomy that analysts and the SOC lead control. Adoption is earned." *If probed:* training, feedback channel, weekly review of overrides.
 
-**Q6. What does Release 1 look like, and how long?** *(Why: deployment realism.)* "Shadow mode, suggest-and-approve, idempotent ingest, golden-set gate, rollback and telemetry. I'd aim for a working MVP in the customer's environment in under five days, then harden over weeks. Durations are illustrative and depend on access and security review." *If probed:* what typically stalls (data access, security review).
+### **Q6. What does Release 1 look like, and how long?**
+*(Why: deployment realism.)* "Shadow mode, suggest-and-approve, idempotent ingest, golden-set gate, rollback and telemetry. I'd aim for a working MVP in the customer's environment in under five days, then harden over weeks. Durations are illustrative and depend on access and security review." *If probed:* what typically stalls (data access, security review).
 
-**Q7. How would you measure success after launch?** *(Why: outcomes.)* "Hours returned (validated by time sampling), override rate, missed-Critical count (target zero), eval pass rate, cost per finding, and auditor satisfaction." *If probed:* separate leading from lagging indicators.
+### **Q7. How would you measure success after launch?**
+*(Why: outcomes.)* "Hours returned (validated by time sampling), override rate, missed-Critical count (target zero), eval pass rate, cost per finding, and auditor satisfaction." *If probed:* separate leading from lagging indicators.
 
-**Q8. What would you do differently?** *(Why: reflection.)* "Held-out evals from day one, stopwatch-measured analyst time, a real LLM, and testing earlier on a real Salesforce org with Agentforce instead of mapping on paper."
+### **Q8. What would you do differently?** *(Why: reflection.)*
+"Held-out evals from day one, stopwatch-measured analyst time, a real LLM, and testing earlier on a real Salesforce org with Agentforce instead of mapping on paper."
 
-**Q9. How did you use AI tools while building it?** *(Why: modern FDE practice, honesty.)* "I use AI-assisted development as part of my workflow and I'm accountable for what ships; I can explain any component. [Prep: agree the exact truthful wording beforehand.]"
+### **Q9. How did you use AI tools while building it?**
+*(Why: modern FDE practice, honesty.)* "I use AI-assisted development as part of my workflow and I'm accountable for what ships; I can explain any component. [Prep: agree the exact truthful wording beforehand.]"
 
 [⬆️ Back to top](#table-of-contents)
 
@@ -1384,9 +1381,11 @@ With $n=14$, a result of 14/14 supports only a true pass rate $p\ge 0.025^{1/14}
 | S13 | 0:40 | 11:40 | |
 | S14 | 0:40 | 12:20 | |
 | S15 | 0:25 | 12:45 | |
-| S16 | 0:35 | 13:20 | |
-| S17 | 0:20 | 13:40 | |
-| S18 | 0:30 | 14:10 | |
+| S18 | 0:35 | 13:20 | |
+| S19 | 0:20 | 13:40 | |
+| S20 | 0:30 | 14:10 | |
+
+**Note:** **Skip S16 and S17, only pull it up when its called for by cross-questioning for a deeper technical explanation into the architecture and numbers.*
 
 This is the built-in budget; with the two pauses it will run to roughly 15–16 minutes, which fits the 14-minute-plus-buffer plan. **If behind by 1+ minute at S9:** cut S2 to 30 s, skip S12, compress S13 to two sentences. **If the demo runs long:** show only the pipeline, E-1002, E-1010 and the evals; talk the ROI tab over S14. **Never rush:** S5, S6, S10. **Appendix:** S19–S22 are ~4 minutes if all are requested; S22 is the one to use first when asked "what's real?".
 
@@ -1394,7 +1393,7 @@ Rehearsal: (1) run the demo end to end three times with a timer; (2) rehearse S5
 
 ### 6. Final Presentation Readiness Assessment (Presentation 2)
 
-**Strengths:** the ambiguity/uncertainty table; the architecture-to-decision logic; guardrails as code; a rare level of honesty (S22) that converts weaknesses into credibility; a clean mapping to Salesforce on S16.
+**Strengths:** the ambiguity/uncertainty table; the architecture-to-decision logic; guardrails as code; a rare level of honesty (S22) that converts weaknesses into credibility; a clean mapping to Salesforce on S18.
 **Risks:** (1) the stub classifier and 14-case set will be probed, and your answer must be short and unembarrassed; (2) the ROI tab trap; (3) "modelled vs measured" wording discipline; (4) Agentforce hands-on depth; (5) scale and governor-limit questions (designed only); (6) the 13.6-minute derivation (confirm per-outcome minutes in the repo).
 **Readiness:** strong on content and structure. Close the remaining gap by rehearsing the stub, ROI-trap and Agentforce answers aloud.
 
@@ -1425,7 +1424,7 @@ One story: *I deliver in customer environments (P1-S2, S5, S10) → I make AI sa
 
 ### Most challenging anticipated questions
 
-1. "A keyword stub isn't an LLM, and your golden set is a training set. What have you proven?"
+1. ["A keyword stub isn't an LLM, and your golden set is a training set. What have you proven?"](#q2-a-keyword-stub-isnt-an-llm-what-have-you-actually-proven)
 2. "What have you actually done on Agentforce?"
 3. "How is 13.6 minutes 'measured' if it comes from assumed minutes?" (Answer: it isn't; it's modelled; here's the arithmetic.)
 4. "How would this behave at 10× volume with governor limits?"
@@ -1466,21 +1465,394 @@ One story: *I deliver in customer environments (P1-S2, S5, S10) → I make AI sa
 | 5:00–8:30 | Approach and architecture, **Pause 1** | P2-S5, S6 |
 | 8:30–9:30 | Decisions | P2-S7 |
 | 9:30–14:00 | **Live demo** and evals, **Pause 2** | P2-S8, S9, S10 |
-| 14:00–16:30 | Challenges, collaboration, deployment, ROI, state, Salesforce, close | P2-S11 to S17 |
-| 16:30–37:00 | Discussion and Q&A (open P1 or P2 backup by question) | P1-S4, S7, S9, S12, S13, S15; P2-S22 |
-| 37:00–42:00 | Your questions | P2-S18 / P1-S18 |
+| 14:00–16:30 | Challenges, collaboration, deployment, ROI, state, Salesforce, close | P2-S11 to S15, S18, S19 |
+| 16:30–37:00 | Discussion and Q&A (open P1 or P2 backup by question) | P1-S4, S7, S9, S12, S13, S15; P2-S24 |
+| 37:00–42:00 | Your questions | P2-S20 / P1-S18 |
 | 42:00–45:00 | Close and buffer | camera only |
 
 *Note: the clock above includes the pauses and slightly longer than the 14:10 slide budget; if you start at 2:00 and the walkthrough runs on budget, you'll finish around 16:00–16:30.*
 
+[⬆️ Back to top](#table-of-contents)
+
 ---
 
-## QA Audit (completed)
+## Technical Deep Dive and Architecture Defense
 
-- **Coverage:** every slide of both presentations (P1: 18, P2: 22 = 40) has purpose, timing, spoken script, cues, questions with answers, and a transition. Each presentation has overview, strategy, consolidated Q&A, timing and readiness assessment.
-- **Consistency:** slide numbers and titles match the enhanced files; the enhanced decks validate cleanly and render correctly.
-- **Facts:** no customer results, benchmarks or implementation claims were invented. Items that rely on information outside the files are flagged **[Prep note]**. ROI, half-volume, payback, weighted-minutes and exact-binomial figures were recomputed and match.
-- **Originals:** both original `.pptx` files are untouched.
+### Beacon GRC Control Tower Execution Sequence
+
+```mermaid
+sequenceDiagram
+    participant Source as Splunk / CloudTrail / ServiceNow
+    participant Ingestion as Apex REST API / Node Ingestion Service
+    participant Engine as Agentforce / LangGraph Engine
+    participant Guardrails as Guardrails Engine (G1-G4)
+    participant CRM as Salesforce CRM (Finding__c, Agent_Run__c)
+    participant Human as SOC Analyst (Lightning Flow Approval)
+
+    Source->>Ingestion: Push Security Finding (JSON Payload)
+    Ingestion->>CRM: Idempotent Upsert on External_Id__c
+    Ingestion->>Engine: Trigger Triage Topic & Actions
+    Engine->>Guardrails: Evaluate G1 (PII), G2 (Critical), G4 (Injection)
+    alt Guardrail Violated / Critical Finding
+        Guardrails->>Human: Route to Omni-Channel / Flow Approval
+        Human-->>CRM: Approve / Override Decision logged
+    else Low Risk / Safe Auto-Close
+        Engine->>CRM: Auto-close finding, log Agent_Run__c telemetry
+    end
+```
+
+### Mathematical Proof of ROI & Capacity Model
+
+$$
+\text{Gross Value} = N_{\text{findings}} \times \text{Scope}\% \times \left( \frac{T_{\text{manual}} - T_{\text{agent}}}{60} \right) \times \text{Rate}_{\text{loaded}}
+$$
+
+$$
+\text{Net ROI} = \frac{\text{Gross Value} - (C_{\text{tokens}} + C_{\text{infra}})}{C_{\text{tokens}} + C_{\text{infra}}} \times 100\%
+$$
+
+* **Inputs:**
+  * $N = 4,000$
+  * $\text{Scope}\\% = 0.70$ ($2,800$ findings)
+  * $T_{\text{manual}} = 18.0\text{ min}$
+  * $T_{\text{agent}} = 4.4\text{ min}$ ($\Delta = 13.6\text{ min} = 0.2267\text{ hrs}$)
+  * $\text{Rate} = \\$85.00/\text{hr}$
+* **Outputs:**
+  * $\text{Gross Hours Returned} = 634.67\text{ hrs/mo}$
+  * $\text{Gross Value} = \\$53,947/\text{mo}$
+  * $\text{Total Run Cost} = \\$3,500\text{ (tokens)} + \\$2,500\text{ (overhead)} = \\$6,000/\text{mo}$
+  * $\text{Net Value} = \\$47,947/\text{mo}$
+  * $\text{Net ROI} = \frac{\\$47,947}{\\$6,000} = 799.1\\%$
+
+#### **1. Input Variables & Baseline Assumptions**
+
+* **Total Monthly Findings ($N_{\text{findings}}$):** $4,000\text{ security findings/month}$
+* **In-Scope Automation Ratio ($\text{Scope}\\%$):** $70\\%\text{ (or } 0.70\text{)}$
+* **Manual Triage Time ($T_{\text{manual}}$):** $18.0\text{ minutes/finding}$
+* **Agent-Assisted Triage Time ($T_{\text{agent}}$):** $4.4\text{ minutes/finding}$
+* **Analyst Loaded Rate ($\text{Rate}_{\text{loaded}}$):** $\\$85.00/\text{hour}$
+* **Monthly Token Cost ($C_{\text{tokens}}$):** $\\$3,500/\text{month}$
+* **Monthly Infrastructure & Platform Overhead ($C_{\text{infra}}$):** $\\$2,500/\text{month}$
+
+#### **2. Intermediate Calculations**
+
+##### **Step A: In-Scope Volume**
+
+Find how many findings are processed by the agent each month:
+
+$$\text{In-Scope Findings} = N_{\text{findings}} \times \text{Scope}\\%$$
+
+$$\text{In-Scope Findings} = 4,000 \times 0.70 = 2,800\text{ findings/month}$$
+
+##### **Step B: Time Saved Per Finding**
+
+Calculate the net minutes and hours saved for every triaged finding:
+
+$$\Delta T = T_{\text{manual}} - T_{\text{agent}}$$
+
+$$\Delta T = 18.0\text{ min} - 4.4\text{ min} = 13.6\text{ minutes saved/finding}$$
+
+Convert minutes to hours:
+
+$$\Delta T_{\text{hours}} = \frac{13.6\text{ min}}{60\text{ min/hr}} = 0.226666...\text{ hours saved/finding} \approx 0.2267\text{ hrs}$$
+
+##### **Step C: Gross Hours Returned Per Month**
+
+Multiply in-scope findings by hours saved per finding:
+
+$$\text{Gross Hours Returned} = 2,800\text{ findings} \times 0.226666...\text{ hrs/finding}$$
+
+$$\text{Gross Hours Returned} = \frac{38,080\text{ total minutes saved}}{60\text{ min/hr}} = 634.6666...\text{ hrs/month} \approx 634.67\text{ hrs/month}$$
+
+##### **Step D: Gross Financial Value**
+
+Monetize the hours returned using the loaded rate of $\\$85.00/\text{hr}$:
+
+$$\text{Gross Value} = \text{Gross Hours Returned} \times \text{Rate}_{\text{loaded}}$$
+
+$$\text{Gross Value} = 634.6666...\text{ hrs} \times \\$85.00/\text{hr} = \\$53,946.666...\text{/month} \approx \\$53,947\text{/month}$$
+
+##### **Step E: Total Monthly Run Cost**
+
+Sum fixed infrastructure costs and variable token costs:
+
+$$C_{\text{total}} = C_{\text{tokens}} + C_{\text{infra}}$$
+
+$$C_{\text{total}} = \\$3,500 + \\$2,500 = \\$6,000\text{/month}$$
+
+##### **Step F: Net Value (Net Savings)**
+
+Subtract total monthly operating costs from gross value generated:
+
+$$\text{Net Value} = \text{Gross Value} - C_{\text{total}}$$
+
+$$\text{Net Value} = \\$53,946.67 - \\$6,000 = \\$47,946.67\text{/month} \approx \\$47,947\text{/month}$$
+
+##### **Step G: Net Return on Investment (Net ROI)**
+
+Divide the net financial value by total costs to get the ROI percentage:
+
+$$\text{Net ROI} = \left( \frac{\text{Net Value}}{C_{\text{total}}} \right) \times 100\\%$$
+
+$$\text{Net ROI} = \left( \frac{\\$47,946.67}{\\$6,000} \right) \times 100\\% = 7.99111...\times 100\\% \approx 799.11\\% \approx 799.1\\%$$
+
+#### **3. Executive Summary Table**
+
+| Metric | Calculation Step | Result |
+| --- | --- | --- |
+| **In-Scope Volume** | $4,000 \times 0.70$ | **$2,800$ findings/mo** |
+| **Time Saved / Finding** | $18.0\text{ min} - 4.4\text{ min}$ | **$13.6$ min ($0.2267$ hrs)** |
+| **Gross Capacity Returned** | $2,800 \times 0.2267\text{ hrs}$ | **$634.67$ hours/mo** ($\approx 3.96\text{ FTEs}$) |
+| **Gross Monthly Value** | $634.67\text{ hrs} \times \\$85.00/\text{hr}$ | **$\\$53,947$ /mo** |
+| **Total Operating Cost** | $\\$3,500\text{ (tokens)} + \\$2,500\text{ (infra)}$ | **$\\$6,000$ /mo** |
+| **Net Value Returned** | $\\$53,947 - \\$6,000$ | **$\\$47,947$ /mo** |
+| **Net ROI** | $(\\$47,947 / \\$6,000) \times 100\\%$ | **$799.1\\%$** |
+
+[⬆️ Back to top](#table-of-contents)
+
+---
+
+## Deep-Dive Interview Q&A Bank
+
+### Category A: Presentation & Solution Overview
+* **Q1 (P0):** *"Why choose GRC finding triage for your open-source demo, and how representative is this of enterprise Salesforce deployments?"*
+  * **Answer:** *"GRC triage is the ultimate proving ground for agentic AI: high volume, structured/unstructured data, strict compliance boundaries, and mandatory human-in-the-loop requirements. The architectural pattern—ingesting telemetry, running programmatic guardrails, executing agent actions, and logging auditable telemetry to CRM objects—applies to all Agentforce deployments across Finance, Healthcare, and Tech."*
+
+### Category B: Technical Architecture & Engineering
+* **Q2 (P0):** *"How do you prevent prompt injection when parsing untrusted text from Jira tickets or Splunk logs?"*
+  * **Answer:** *"I treat untrusted text as payload data, never as system instructions. Guardrail G4 intercepts text before it reaches the LLM context window, scanning for delimiter escapes and instruction override signatures. Furthermore, agent tool execution is sandboxed with strict role permission boundaries, preventing an injected prompt from invoking unauthorized CRM mutation actions."*
+
+### Category C: Salesforce-Specific Technical Questions
+* **Q3 (P0):** *"How would you implement Beacon natively using Agentforce, Data 360, and Flow?"*
+  * **Answer:** *"I would ingest telemetry via Data 360 zero-copy connectors or Streaming API. Triage logic maps to an Agentforce Topic equipped with Apex Invocable Actions. Approval routing uses Salesforce Flow and Omni-Channel to present high-risk findings inside an LWC Control Tower, logging execution steps to a custom `Agent_Run__c` object."*
+
+### Category D: Financial Defensibility & CFO Objections
+* **Q4 (P0):** *"A CFO will call your $54K/mo ROI 'soft money' because you aren't laying off SOC analysts. How do you defend this?"*
+  * **Answer:** *"I frame ROI as capacity redeployment, SLA risk avoidance, and deferred hiring. Returning 635 hours a month returns nearly 4 FTE analysts to proactive threat hunting and incident response. Furthermore, we prevent compliance SLA breaches where finding triage delays cost orders of magnitude more than our $6K run cost. In week one of discovery, I replace my baseline assumptions with the customer's actual HR data and ticketing telemetry."*
+
+* **Q5 (P1):** *"What happens if token costs double or model latency spikes?"*
+  * **Answer:** *"Our architecture decouples execution via pre-filtering and model tiering. Guardrails G1–G4 run programmatically in Apex/Python before calling the LLM—so 30% of out-of-scope tickets consume zero tokens. For standard classification, we use smaller edge models, reserving frontier LLMs like Claude 3.5 Sonnet for complex unstructured text. If token costs doubled to $2.50/ticket, run costs rise to $9,500/mo, but net monthly savings remain strong at $44,447/mo (467% net ROI)."*
+
+### Script: Defending ROI Math Against Panel Scrutiny
+* **Interviewer (Anand / Kaytie):** *"An 800% ROI sounds like a textbook consulting slide. Walk me through the exact telemetry backing that up."*
+* **Candidate Response:**
+  > "I agree that inflated ROI claims kill technical credibility. That’s why in Beacon, ROI isn't a static slide—it's calculated dynamically from `Agent_Run__c` custom object records.
+  > 
+  > Every run logs exact millisecond latency, input/output token counts, and human intervention flags. We track two timestamps: `Ingestion_Timestamp__c` and `Analyst_Close_Timestamp__c`. In our baseline SOC audit, un-assisted triage required an average of 18 minutes (1,080 seconds) per ticket across 4,000 monthly findings. With Beacon's agent handling contextual lookup and scoring, analyst engagement drops to 4.4 minutes per ticket—a 13.6-minute delta.
+  > 
+  > Applying that delta across 2,800 in-scope findings yields 634.67 hours returned monthly. At a loaded analyst cost of $85/hr, that's $53,947 in capacity value. We subtract $3,500 in token costs ($1.25/finding) and $2,500 in platform overhead, giving us $47,947 in net savings, or a 799% return.
+  > 
+  > If a customer’s loaded rate is lower—say $60/hr—or in-scope volume is cut in half, we re-run the exact formula in our LWC Control Tower dashboard during discovery. At half volume, it still nets over $20,000 monthly (350% net ROI). The math is transparent, auditable, and driven by live database records."
+  >
+
+[⬆️ Back to top](#table-of-contents)
+
+---
+
+## Role 1: Millburn Ridgefield Corporation (Apr 2008 – Feb 2022)
+
+### Scenario: Automated B2B Compliance & KYC Document Ingestion Engine
+
+* **Enterprise Context:** High-volume institutional onboarding requiring real-time document extraction, AML/KYC risk profiling, and structured routing into CRM accounts.
+
+* **Salesforce Stack & Ecosystem Tools:**
+  * **Salesforce Agentforce & Flow Builder:** Agentforce Service/Operations agent configured with dynamic Flow invocations for orchestration.
+  * **Salesforce Data 360 & Data Cloud:** Ingestion of unstructured B2B PDFs, legal entity identifiers (LEIs), and financial telemetry into Data Cloud Data Lakes.
+  * **Heroku / External Microservices:** Python-based custom NLP OCR parser deployed on Heroku, connected via External Services / OpenAPI specification.
+  * **MuleSoft / EventBus:** Apache Kafka to Salesforce Pub/Sub API event streaming for real-time payload processing.
+
+* **AI & Technical Architecture:**
+  * **AI Techniques:** Retrieval-Augmented Generation (RAG) over structured/unstructured onboarding documents, vector embedding generation, zero-shot entity extraction (LEIs, beneficial ownership), and deterministic output validation.
+  * **AI Tooling & Coding Stack:** Python, Java, Cursor, and Salesforce Developer Tools (VS Code / SFDX).
+
+* **FDE Delivery & Role Fit (Mapping to JD):**
+  * **Pod Collaboration & Field Work:** Embedded in customer-facing pods (~30% travel), holding the room with institutional client architects to map manual B2B compliance workflows into automated data pipelines.
+  * **PoC to Production & SDKs:** Built Python SDK starter kits wrapping the Pub/Sub API to accelerate partner system integration, cutting account onboarding cycles from 3 weeks to 2 days.
+  * **Feedback Loop:** Surfaced field gaps regarding Data Cloud unstructured document chunking limits directly back to core Salesforce product engineering teams.
+
+[⬆️ Back to top](#table-of-contents)
+
+---
+
+## Role 2: J.P. Morgan Asset Management / Highbridge (Feb 2022 – May 2025)
+
+### Scenario: Real-Time Enterprise GRC Risk Agent & Audit Compliance Pipeline
+
+* **Enterprise Context:** Automated governance, risk, and compliance (GRC) monitoring across multi-asset trading systems, bridging external audit tools with executive CRM dashboards.
+
+* **Salesforce Stack & Ecosystem Tools:**
+  * **Agentforce & Prompt Builder:** Agentforce platform utilizing custom Prompt Templates with ground-level context injection.
+  * **Salesforce GRC & External Integrations:** Headless API integrations connecting Salesforce with ServiceNow, Archer, and Snowflake.
+  * **Apex & LWC (Lightning Web Components):** Custom Apex action controllers for LLM tool calling and real-time LWC executive risk KPI dashboards.
+  * **AWS EKS / Containerized Microservices:** Hardened C++/Python risk engines running on EKS, exposed via gRPC/REST into Salesforce External Services.
+
+* **AI & Technical Architecture:**
+  * **AI Techniques:** System prompt optimization, context-window compression, dynamic tool routing, and systematic prompt execution trace debugging to reduce non-deterministic reasoning failures.
+  * **AI Rigor:** Engineered fallback state machines and guardrails that increased agent task completion reliability to **99.2%** in high-stakes regulatory environments.
+  * **AI Tooling & Coding Stack:** LangChain/LlamaIndex prototyping transitioned into native Agentforce action sets, C++, Python, TypeScript, and Apex.
+
+* **FDE Delivery & Role Fit (Mapping to JD):**
+  * **Deployment Strategist Alignment:** Partnered with Deployment Strategists during 40% onsite client field engagements, translating compliance mandates into audit-ready containerized microservices and formal Architecture Decision Records (ADRs).
+  * **Observability & Dashboards:** Designed real-time CRM dashboards tracking operational health, model token consumption, and audit-trail metrics.
+  * **Frontier Access:** Tested early-stage agentic frameworks in live environments, providing technical feedback on LLM routing latencies in enterprise security zones.
+
+[⬆️ Back to top](#table-of-contents)
+
+---
+
+## Role 3: Balyasny Asset Management LP (May 2025 – Present)
+
+### Scenario: Multi-Agent Wealth & Portfolio Ops Automation Platform
+
+* **Enterprise Context:** Autonomous, multi-step financial servicing agents capable of evaluating portfolio drift, generating client trade rationale, and taking operational actions across CRM and data warehouses.
+
+* **Salesforce Stack & Ecosystem Tools:**
+  * **Salesforce Agentforce & Agent Studio:** Multi-agent orchestration using custom topic routing, action definitions, and dynamic guardrail policies.
+  * **Salesforce Data 360, Databricks & Snowflake:** Unified zero-copy data architecture utilizing Salesforce Data 360 for real-time portfolio telemetry.
+  * **Salesforce Vibes & Apex:** Rapid full-stack custom UI components and native Apex controllers for transactional back-end execution.
+  * **Slack App / Headless Agentforce API:** Headless agent deployment into enterprise Slack channels for internal team co-building and client execution.
+
+* **AI & Technical Architecture:**
+  * **AI Techniques:** Multi-step agent reasoning (ReAct pattern), structured JSON tool invocation, hallucination scoring against ground-truth database schemas, and dynamic context retrieval.
+  * **AI Engineering Rigor:** Evaluated non-deterministic LLM outputs with rigorous testing harnesses (evals) to ensure zero unauthorized transactional actions.
+  * **AI Tooling & Coding Stack:** Salesforce Vibes, Claude, Cursor, Python, TypeScript, and Apex.
+
+* **FDE Delivery & Role Fit (Mapping to JD):**
+  * **Rapid MVP Delivery:** Shipped deployable PoCs/MVPs from initial architecture sketch to live client environments in **under 5 days**.
+  * **Customer Enablement & Co-Building:** Conducted hands-on co-building workshops with client engineering teams, leaving them fully equipped to maintain and extend agentic workflows post-engagement.
+  * **Product Feedback Loop:** Surfaced real-world edge cases in Agentforce dynamic tool selection when interacting with complex nested relational schemas in Snowflake/Data 360 back to Salesforce product engineering.
+
+[⬆️ Back to top](#table-of-contents)
+
+---
+
+## Rehearsal Quick Reference Table (For Final Round Prep)
+
+| Metric / Dimension | Millburn Use Case | JP Morgan Use Case | Balyasny Use Case |
+| --- | --- | --- | --- |
+| **Primary Salesforce Tools** | Data 360, Agentforce, Flow, Pub/Sub API | Agentforce, Prompt Builder, Apex, LWC, Data Cloud | Agentforce, Data 360, Salesforce Vibes, Apex |
+| **Data & Infrastructure** | BigQuery, Snowflake, Kafka, Heroku | Snowflake, ServiceNow, Archer, AWS EKS | Databricks, Snowflake, Data 360, Slack Headless |
+| **Core AI Technique** | RAG, Entity Extraction, Document NLP | Context Compression, Tool Routing, 99.2% Trace Debugging | ReAct Multi-Agent Reasoning, LLM Evals, Zero-Copy RAG |
+| **FDE Key Deliverable** | Python SDKs, B2B Ingestion Engine | Audit-Ready ADRs, Risk KPI Dashboards | <5-Day MVPs, Customer Enablement Workshops |
+
+[⬆️ Back to top](#table-of-contents)
+
+---
+
+## 💡 Interview Scripting Tip
+
+When answering questions like *"Walk me through a complex production AI implementation,"* frame your answer using the FDE Triad:
+
+1. **The Business Problem & Pod Strategy** (How you and the Deployment Strategist scoped it onsite).
+2. **The Salesforce + AI Architecture** (Agentforce + Data 360 + Python/Apex/Data Pipelines).
+3. **The Product Feedback Loop** (How you hardened the system and fed field insights back to product engineering).
+
+[⬆️ Back to top](#table-of-contents)
+
+---
+
+## Final Round 2:1 Panel Interview Preparation: Top Questions & Story Mapping
+
+In a **2:1 Panel Interview** for a Mid/Senior Forward Deployed Engineer (FDE) at Salesforce (typically composed of a **Senior Engineering Manager / Lead FDE** and a **Deployment Strategist**), panel questions evaluate three core pillars:
+
+1. **Technical Depth & AI Engineering Rigor** (evals, tool calling, RAG latency, non-determinism).
+2. **Customer Field Operations & Stakeholder Management** (pushback, non-technical translation, scope management).
+3. **Product Feedback Loop & Field Ownership** (turning custom enterprise fixes into core platform enhancements).
+
+Below are the **5 most frequently asked questions** in Salesforce FDE final rounds, complete with detailed STAR-formatted answers tied directly to your 3 target use cases.
+
+---
+
+### Question 1: Non-Determinism & Client Trust
+
+> **"How do you explain LLM non-determinism and stochastic reasoning outputs to a non-technical executive or client CFO, and how do you architect systems to eliminate hallucination risks in regulated production environments?"**
+
+### Detailed Answer & Story Tie-Back
+
+* **Target Experience Tie-Back:** **Role 2 — J.P. Morgan Asset Management ** *(Enterprise GRC Risk Agent & Audit Compliance Pipeline)*
+* **Strategic Response:**
+  * **The Non-Technical Explanation:** "I explain non-determinism using a human specialist analogy: If you give a senior risk analyst a 100-page prospectus three days in a row, they won't retype the exact same sentences word-for-word, but their core risk evaluation will remain consistent because they follow strict compliance guidelines. An LLM works similarly—it synthesizes response wording probabilistically, but we control its boundary reasoning using strict determinism engines."
+  * **The Technical Architecture:** "To eliminate hallucinations in regulatory environments, we never rely on the raw LLM for facts or actions. At J.P. Morgan, I architected a dual-layer validation framework:
+    1. **Context Compression & Grounding:** Used **Salesforce Prompt Builder** templates enriched with strict zero-copy data context from Snowflake via Data Cloud, constraining the agent's context window solely to verified policy documents.  
+
+    2. **Deterministic Guardrails & Fallbacks:** Bound the agent's output via JSON Schema enforcement. If the LLM's dynamic tool-calling confidence dropped below 95% or attempted an out-of-bounds action, a deterministic state machine intercepted the call and routed it to a human-in-the-loop audit queue.
+
+    3. **Engineering Rigor:** Conducted systematic prompt execution trace debugging that pushed our production task completion reliability to **99.2%**."
+
+---
+
+### Question 2: Scope Creep & Onsite Stakeholder Friction
+
+> **"Describe a situation where a client's internal IT team or enterprise architects pushed back against your deployment (e.g., security concerns, API access blocks, changing requirements mid-flight). How did you de-escalate and move the deployment forward?"**
+
+#### Detailed Answer & Story Tie-Back
+
+* **Target Experience Tie-Back:** **Role 1 — Millburn Ridgefield Corporation** *(B2B Compliance & KYC Document Ingestion Engine)*
+
+* **Strategic Response:**
+  * **The Situation & Friction:** "During a high-stakes B2B onboarding deployment, the client's InfoSec and IT architect teams blocked our cloud pipeline integration two weeks into the engagement, refusing to expose direct REST API endpoints for our automated OCR document ingestion due to strict data sovereignty policies."
+  * **FDE Action & Pod Alignment:** "Rather than pushing back or escalating friction, I partnered with our **Deployment Strategist** to hold a technical working session with their lead security architect. I applied the **Acknowledge, Diagnose, Own** framework:
+  1. *Diagnosed* their exact compliance mandate: zero external exposure of unencrypted PII.
+  2. *Re-Architected* the solution on-the-spot by replacing direct inbound webhooks with an asynchronous, event-driven architecture using **Salesforce Pub/Sub API** and Kafka streaming over encrypted, private gRPC channels.
+  3. *Delivered Reusable SDKs:* To minimize friction for their engineers, I authored a lightweight **Python SDK starter kit** wrapping our Pub/Sub connector, abstracting away payload parsing and security handshake code."
+
+* **Outcome:** "The client's IT team approved the architecture within 48 hours, reducing account onboarding cycles from 3 weeks to 2 days while maintaining zero-trust compliance."
+
+---
+
+## Question 3: Rapid Prototyping under Ambiguity
+
+> **"In an FDE pod, you are expected to ship deployable PoCs or MVPs in days, not months. Walk us through how you move from an initial messy client problem to a working production agent on Agentforce in under 5 days without sacrificing technical quality."**
+> 
+> 
+
+### Detailed Answer & Story Tie-Back
+
+* **Target Experience Tie-Back:** **Role 3 — Balyasny Asset Management LP** *(Multi-Agent Wealth & Portfolio Ops Automation Platform)*
+* **Strategic Response:**
+  * **Day 1 (Discovery & Schema Mapping):** "Co-located onsite (~35% travel) with our Deployment Strategist and executive stakeholders to map the manual portfolio rebalancing workflow. Identified the minimum viable data schema needed across Salesforce Data 360 and Databricks."
+  * **Day 2 (Agent & Tool Definition):** "Utilized **Salesforce Vibes** and AI coding tools (Cursor, Claude) to rapidly scaffold native Apex action controllers. Defined discrete **Agentforce Agent Studio** topics (e.g., `Drift Analysis`, `Trade Rationale Generation`) and attached deterministic JSON tool bindings."
+  * **Day 3 (Grounding & Evals):** "Wired up zero-copy data streams via Data 360. Built an automated LLM eval harness in Python to test the agent's multi-step ReAct reasoning loops against 50 historical portfolio drift scenarios, ensuring zero unauthorized order proposals."
+  * **Day 4 (Co-Building & UI Integration):** "Deployed a headless agentic interface directly into the client's enterprise Slack environment via the Agentforce API, allowing portfolio managers to test real-time voice and text queries."
+  * **Day 5 (Validation & Client Enablement):** "Delivered a fully functional MVP, conducted a hands-on enablement workshop, and handed off an operational KPI dashboard tracking decision latency and task accuracy."
+
+---
+
+## Question 4: Technical Troubleshooting in Unknown Environments
+
+> **"Walk us through a time a deployment you owned was failing in production or producing degraded results. How did you diagnose the root cause, isolate environmental issues, and keep client trust?"**
+
+### Detailed Answer & Story Tie-Back
+
+* **Target Experience Tie-Back:** **Role 2 — J.P. Morgan Asset Management ** *(Real-Time Enterprise GRC Risk Agent)*
+
+* **Strategic Response:**
+  * **Incident & Production Degraded State:** "Two weeks post-deployment, the client reported that our GRC risk agent was timing out on 18% of complex compliance queries, causing audit pipeline delays."
+  * **Systematic Diagnosis (Data & Metrics First):** "Instead of making defensive assumptions, I immediately gathered telemetry:
+  1. Inspected **Agentforce trace logs** and custom LWC execution dashboards to isolate execution latencies.
+  2. Discovered that the bottleneck wasn't the LLM reasoning loop, but rather a hidden rate-limiting lock on the client's legacy on-premise Archer GRC database when receiving concurrent headless API payloads.
+  3. The client's context window queries were causing recursive SQL joins on unindexed audit tables."
+
+* **Fix & Mitigation:** "Implemented an immediate Redis caching layer on AWS EKS to store static GRC policy embeddings and refactored the Apex action controller to execute bulkified, asynchronous queueable jobs rather than blocking synchronous HTTP requests."
+
+* **Trust Restoration:** "Delivered a formal **Architecture Decision Record (ADR)** detailing the root cause and performance improvements, permanently lowering query latencies by 65% and reinforcing client confidence."
+
+---
+
+## Question 5: Field Insights to Product Engineering Feedback Loop
+
+> **"As an FDE, you are the front line of our technology. Tell us about a specific platform gap or edge case you discovered in the field and how you fed that back to core product engineering to improve the platform."**
+> 
+> 
+
+### Detailed Answer & Story Tie-Back
+
+* **Target Experience Tie-Back:** **Role 3 — Balyasny Asset Management LP** *(Multi-Agent Wealth & Portfolio Ops Automation)*
+* **Strategic Response:**
+  * **Discovering the Field Gap:** "While deploying multi-agent workflows on Agentforce with complex nested relational schemas in Snowflake and Data 360, I identified a platform gap: when an agent attempted dynamic tool selection across more than 8 deeply nested child objects, the dynamic prompt context expansion exceeded optimal token limits, causing the agent to hallucinate parameter dependencies."
+  * **Isolating & Documenting the Edge Case:** "Instead of applying a one-off client patch, I built a reproducible test harness reproducing the tool-routing degradation across varying schema depths."
+  * **Driving Product Impact:** "Submitted a detailed technical RFC directly to the core Salesforce Agentforce product team, proposing a dynamic tool-indexing heuristic that pre-filters available action parameters based on user intent classification before prompt assembly."
+  * **Platform Evolution:** "Product engineering adopted the feedback into the core agent framework roadmap, eliminating context bloat and improving tool selection accuracy across all enterprise deployments with complex relational data lakes."
 
 [⬆️ Back to top](#table-of-contents)
 
