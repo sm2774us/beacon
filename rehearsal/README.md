@@ -30,6 +30,7 @@
   - 16.4. [v1 vs v2: what is actually different](#v1-vs-v2-what-is-actually-different)
   - 16.5. [How to read this honestly (say it in the room)](#how-to-read-this-honestly-say-it-in-the-room)
   - 16.6. [Demo script (about 60 seconds, no reset)](#demo-script-about-60-seconds-no-reset)
+17. [Glossary of terms and acronyms](#glossary)
 
 [⬆️ Back to top](#table-of-contents)
 
@@ -1975,6 +1976,131 @@ The ROI tab always reflects whichever version was run last. **For the demo, fini
 4. Back to Mission Control, switch to **v2**, click **Run agent on all (v2)**. Prompt column flips, auto-closed becomes 4, hours saved 3.17.
 5. Open **ROI**: 799%. Close with the honesty block (stub, training set, modelled).
 6. In Salesforce, the same sequence works: Prompt switch, **Run agent on all**, **V1 vs V2 Lab** tab, and the Agent Console commands `triage E-1003 with v1`, `compare E-1003`, `compare all`.
+
+[⬆️ Back to top](#table-of-contents)
+
+---
+
+<a id="glossary"></a>
+## Glossary of terms and acronyms
+
+Terms are alphabetical. Links from the text land here.
+
+**A**
+- <a id="g-agent"></a>**Agent** - a program that gathers facts with tools and then chooses an action.
+- <a id="g-agentforce"></a>**Agentforce** - Salesforce's platform for building AI agents; Beacon's action can be attached to one.
+- <a id="g-apex"></a>**Apex** - Salesforce's server-side programming language (similar to Java).
+- <a id="g-api"></a>**API** - Application Programming Interface: a defined way for programs to talk to each other.
+- <a id="g-adr"></a>**ADR** - Architecture Decision Record: a short note explaining *why* a design choice was made.
+- <a id="g-asset"></a>**Asset** - a system or resource a finding is about (a database, bucket, server).
+- <a id="g-audit"></a>**Audit trail** - an append-only record of decisions, so they can be reviewed later.
+
+**B**
+- <a id="g-band"></a>**Band** - the risk score as a word: Low, Medium, High, Critical.
+- <a id="g-bulk"></a>**Bulk-safe** - code that handles many records with a fixed number of queries and writes.
+
+**C**
+- <a id="g-cache"></a>**Cache** - fast temporary storage for data that is read often.
+- <a id="g-ci"></a>**CI** - Continuous Integration: automatic build and test on every code push.
+- <a id="g-confidence"></a>**Confidence** - Beacon's 0-1 measure of how complete the facts were (not a calibrated probability).
+- <a id="g-control"></a>**Control** - a written security requirement with an owner, e.g. SOC 2 CC6.1.
+- <a id="g-curl"></a>**curl** - a command-line tool for sending HTTP requests.
+
+**D**
+- <a id="g-dedupe"></a>**Dedupe** - removing duplicates.
+- <a id="g-dml"></a>**DML** - Data Manipulation Language: Salesforce's insert / update / delete / upsert operations.
+- <a id="g-drift"></a>**Drift** - a setting moving away from its approved baseline (also: model behaviour changing over time).
+
+**E**
+- <a id="g-edge"></a>**Edge / CDN** - servers near users that speed up and protect traffic.
+- <a id="g-endpoint"></a>**Endpoint** - one URL a server answers, e.g. `/api/state`.
+- <a id="g-eval"></a>**Eval** - a repeatable test that scores an AI-like step against known answers.
+
+**F**
+- <a id="g-fls"></a>**FLS** - Field-Level Security: which fields a user may read or edit.
+- <a id="g-finding"></a>**Finding** - one alert that something may be wrong.
+- <a id="g-flow"></a>**Flow** - Salesforce's point-and-click automation tool.
+- <a id="g-fde"></a>**FDE** - Forward Deployed Engineer: an engineer embedded with a customer to ship real solutions.
+
+**G**
+- <a id="g-golden"></a>**Golden set** - labelled examples with known correct answers, used for evals.
+- <a id="g-governor"></a>**Governor limits** - Salesforce caps on queries, writes and time per request.
+- <a id="g-grc"></a>**GRC** - Governance, Risk and Compliance.
+- <a id="g-guardrail"></a>**Guardrail** - a rule enforced in code that the agent cannot override.
+- <a id="g-gfm"></a>**GFM** - GitHub Flavored Markdown, the format of this document.
+
+**H**
+- <a id="g-hitl"></a>**Human-in-the-loop (HITL)** - a person must approve certain decisions.
+- <a id="g-http"></a>**HTTP / HTTPS** - the protocol of the web (HTTPS is the encrypted form).
+
+**I**
+- <a id="g-idempotent"></a>**Idempotent** - doing it twice has the same effect as doing it once.
+- <a id="g-injection"></a>**Prompt injection** - hostile text that tries to give instructions to an AI.
+- <a id="g-invocable"></a>**Invocable method** - an Apex method exposed so Flow, Agentforce or REST can call it.
+
+**J**
+- <a id="g-json"></a>**JSON / JSONL** - a text format for structured data; JSONL puts one JSON object per line.
+
+**K**
+- <a id="g-kpi"></a>**KPI** - Key Performance Indicator: a headline measurement.
+
+**L**
+- <a id="g-llm"></a>**LLM** - Large Language Model, an AI that reads and writes text. Beacon uses a stub in its place.
+- <a id="g-lookup"></a>**Lookup** - a Salesforce field that points to a row in another object.
+- <a id="g-lwc"></a>**LWC** - Lightning Web Component: a Salesforce screen component written in JavaScript and HTML.
+
+**M**
+- <a id="g-mermaid"></a>**Mermaid** - text-based diagram language used in this document.
+- <a id="g-mfa"></a>**MFA** - Multi-Factor Authentication: a second proof of identity at login.
+
+**N**
+- <a id="g-negation"></a>**Negation** - words that flip meaning ("no evidence of malware").
+- <a id="g-node"></a>**Node.js** - a runtime that runs JavaScript outside a browser.
+- <a id="g-normalise"></a>**Normalise** - convert different spellings to one standard form.
+
+**O**
+- <a id="g-object"></a>**Object (Salesforce)** - a custom table, e.g. `Finding__c`.
+- <a id="g-observability"></a>**Observability** - being able to see what a system is doing through metrics, logs and traces.
+- <a id="g-override"></a>**Override rate** - rejected / decided; shows how often humans overrule the agent.
+
+**P**
+- <a id="g-permset"></a>**Permission set** - a bundle of access rights granted to a user.
+- <a id="g-pii"></a>**PII** - Personally Identifiable Information.
+- <a id="g-prompt"></a>**Prompt** - the instructions given to a language model; versioned here as v1 / v2.
+
+**Q**
+- <a id="g-quarantine"></a>**Quarantine** - a holding area for rejected records, kept with a reason.
+- <a id="g-queue"></a>**Queue** - a waiting line of work items.
+
+**R**
+- <a id="g-rbac"></a>**RBAC** - Role-Based Access Control.
+- <a id="g-regex"></a>**Regex** - a compact pattern for matching text.
+- <a id="g-rest"></a>**REST** - a common style of web API using URLs and HTTP verbs.
+- <a id="g-roi"></a>**ROI** - Return on Investment: (benefit - cost) / cost.
+
+**S**
+- <a id="g-salesforce"></a>**Salesforce** - a cloud business platform used here as the enterprise runtime.
+- <a id="g-schema"></a>**Schema** - the agreed shape of data (field names and types).
+- <a id="g-set"></a>**Set** - a collection that holds each value once and checks membership instantly.
+- <a id="g-severity"></a>**Severity** - the source tool's rating of how bad something is.
+- <a id="g-siem"></a>**SIEM** - Security Information and Event Management tool (e.g. Splunk).
+- <a id="g-soc"></a>**SOC** - Security Operations Center, the analyst team.
+- <a id="g-soc2"></a>**SOC 2** - a widely used security compliance framework; controls are labelled CC6.1 etc.
+- <a id="g-soql"></a>**SOQL** - Salesforce Object Query Language, like SQL.
+- <a id="g-stateless"></a>**Stateless** - keeps no memory between requests, so any copy can serve any request.
+- <a id="g-shadow"></a>**Shadow mode** - running the agent silently beside humans to compare before trusting it.
+
+**T**
+- <a id="g-telemetry"></a>**Telemetry** - automatic measurements recorded about each run.
+- <a id="g-tier"></a>**Tier** - business importance of an asset (1 = most).
+- <a id="g-triage"></a>**Triage** - sorting by urgency and deciding what happens next.
+
+**U**
+- <a id="g-upsert"></a>**Upsert** - update the row if it exists, otherwise insert it.
+- <a id="g-usermode"></a>**USER_MODE** - Apex setting that enforces the current user's permissions on queries.
+
+**W**
+- <a id="g-webhook"></a>**Webhook** - a message one system sends to another when an event happens; retries cause duplicates.
 
 [⬆️ Back to top](#table-of-contents)
 
