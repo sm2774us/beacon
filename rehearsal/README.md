@@ -23,6 +23,13 @@
 13. [Rehearsal Quick Reference Table (For Final Round Prep)](#rehearsal-quick-reference-table-for-final-round-prep)
 14. [💡 Interview Scripting Tip](#-interview-scripting-tip)
 15. [Final Round 2:1 Panel Interview Preparation: Top Questions & Story Mapping](#final-round-21-panel-interview-preparation-top-questions--story-mapping)
+16. [Beacon: "Run all v1, then Run all v2" and "v1 vs v2" explained](#beacon-run-all-v1-then-run-all-v2-and-v1-vs-v2-explained)
+  - 16.1. [1. What happens when you click "Run agent on all (v1)"](#1-what-happens-when-you-click-run-agent-on-all-v1)
+  - 16.2. [2. Then you click "Run agent on all (v2)"](#2-then-you-click-run-agent-on-all-v2)
+  - 16.3. [3. What stays the same, by design](#3-what-stays-the-same-by-design)
+  - 16.4. [v1 vs v2: what is actually different](#v1-vs-v2-what-is-actually-different)
+  - 16.5. [How to read this honestly (say it in the room)](#how-to-read-this-honestly-say-it-in-the-room)
+  - 16.6. [Demo script (about 60 seconds, no reset)](#demo-script-about-60-seconds-no-reset)
 
 [⬆️ Back to top](#table-of-contents)
 
@@ -1853,6 +1860,121 @@ Below are the **5 most frequently asked questions** in Salesforce FDE final roun
   * **Isolating & Documenting the Edge Case:** "Instead of applying a one-off client patch, I built a reproducible test harness reproducing the tool-routing degradation across varying schema depths."
   * **Driving Product Impact:** "Submitted a detailed technical RFC directly to the core Salesforce Agentforce product team, proposing a dynamic tool-indexing heuristic that pre-filters available action parameters based on user intent classification before prompt assembly."
   * **Platform Evolution:** "Product engineering adopted the feedback into the core agent framework roadmap, eliminating context bloat and improving tool selection accuracy across all enterprise deployments with complex relational data lakes."
+
+[⬆️ Back to top](#table-of-contents)
+
+---
+
+## Beacon: "Run all v1, then Run all v2" and "v1 vs v2" explained
+
+All numbers below come from the app's own output on the 14 seeded findings (`node local/lib/store.js` logic, same as the UI and the Apex engine). Data is synthetic, the classifier is a keyword stub standing in for an LLM, and latency and minutes saved are modelled.
+
+---
+
+### 1. What happens when you click "Run agent on all (v1)"
+
+1. The UI calls `POST /api/run-all?prompt=v1`. Every finding that is **not already Approved or Rejected** is triaged with prompt v1. A finding that was run before is simply **re-run**; there is no reset.
+2. For each finding the agent executes five steps: `get_asset_context` -> `lookup_control` -> `classify_llm (prompt v1)` -> `score_risk` -> `policy_guardrail`. The only step that differs between v1 and v2 is the classifier.
+3. The outcome is written to the finding and to **one** `Agent_Run__c` (local: `runs[id]`) tagged `promptVersion = v1`. Any previous run for that finding is replaced.
+4. The KPI tiles recompute from the runs now on file.
+
+**Result after Run all v1 (14 findings):**
+
+| KPI | Value |
+|---|---|
+| Triaged | 14/14 |
+| Auto-closed | **3** |
+| Assigned | **7** |
+| Awaiting approval | 3 (E-1002, E-1008, E-1014) |
+| Blocked | 1 (E-1010) |
+| Guardrails fired | 5 |
+| Analyst time saved | **3.11 h** (about 13.3 min per finding), about $264 at $85/h |
+| Golden-set accuracy of the classifier | 9/14 = **64.3%** |
+
+---
+
+### 2. Then you click "Run agent on all (v2)"
+
+Nothing is reset. Every non-decided finding is triaged again with v2 and **replaces** its v1 run. The table shows what moves.
+
+| Finding | v1 result | v2 result | What happened |
+|---|---|---|---|
+| E-1001 Impossible travel login | category `other`, score 65, conf 0.85, ASSIGNED | `identity`, 73, 1.00, ASSIGNED | v2 knows impossible-travel. Same outcome, correct label, higher score. |
+| E-1002 S3 public-read ACL | `other`, 81, PENDING_APPROVAL (G2) | `exposure`, 89, PENDING_APPROVAL (G2) | Still human-gated either way. v2 correct and scored higher. |
+| **E-1003 EDR flagged file ("no evidence of malware")** | `malware`, 36, **ASSIGNED** | `benign`, 1, **AUTO_CLOSED** | v2's negation check recognises a false positive. **Outcome changes**: an analyst is spared 14 min of work, 17.5 min credited. |
+| E-1007 Security group open to the world | `other`, 18 | `exposure`, 26 | Correct label; still Low band so still AUTO_CLOSED (see section 6). |
+| E-1011 Backup volume check | `other`, 58, ASSIGNED | `exposure`, 66, ASSIGNED | Correct label, higher score. |
+| E-1004, E-1005, E-1006, E-1008, E-1009, E-1010, E-1012, E-1013, E-1014 | identical | identical | Same category, score and outcome in both versions. |
+
+**Result after Run all v2:**
+
+| KPI | v1 | v2 | Change |
+|---|---|---|---|
+| Auto-closed | 3 | **4** | +1 (E-1003) |
+| Assigned | 7 | **6** | -1 |
+| Awaiting approval | 3 | 3 | none |
+| Blocked | 1 | 1 | none |
+| Hours saved | 3.11 | **3.17** | +0.06 h |
+| Avg minutes saved per finding | 13.3 | **13.6** | +0.3 |
+| Golden-set accuracy | 64.3% (9/14) | **100% (14/14)** | +35.7 pts |
+| Findings in the "other" bucket | 8 | 4 | -4 |
+| Avg confidence | 0.89 | 0.94 | +0.05 |
+
+In the queue, the **Prompt** column flips from v1 to v2 on every row, and the ROI tab now shows the v2 numbers (below).
+
+**ROI tab effect (4,000 findings/month, 70% in scope, $85/h, $6,000 run cost):**
+
+| | Avg min saved | Hours | Gross | Net | ROI |
+|---|---|---|---|---|---|
+| After Run all v1 | 13.3 | about 621 | about $52,757 | about $46,757 | about **779%** |
+| After Run all v2 | 13.6 | 635 | $53,947 | $47,947 | **799%** |
+
+The ROI tab always reflects whichever version was run last. **For the demo, finish on v2 before opening the ROI tab** so it matches the slides (799%). A single finding triaged gives yet another number (826% for E-1001 alone), which is why the whole queue should be run first.
+
+---
+
+### 3. What stays the same, by design
+
+- **Guardrails are version-independent.** G4 (injection), G2 (Critical, score 75+), G3 (confidence below 0.60) and G1 (PII never auto-closes) fire on exactly the same findings in v1 and v2 (the same 5 guardrail events). A weaker prompt can mislabel a finding; it cannot talk its way past a policy.
+- **Scoring weights, confidence formula, latency model** are identical. Latency (about 660 ms per finding) is a sum of step constants, so it is the same for both versions and says nothing about model speed.
+- **Human decisions are preserved.** Approved or rejected findings are not re-run.
+
+---
+
+### v1 vs v2: what is actually different
+
+| | **v1** | **v2** |
+|---|---|---|
+| Malware keywords | malware, ransomware, `c2 beacon` | malware, ransomware, `c2 ` |
+| Phishing | phish | phish, credential harvest |
+| Identity | **none** | impossible travel, mfa disabled |
+| Exposure | exposed | public-read, publicly accessible, `0.0.0.0/0`, unencrypted, exposed |
+| Privilege | sudo, admin role | sudo, admin role, root account, privilege |
+| Drift | drift | drift, baseline |
+| Negation pre-check ("no evidence of", "false positive", "came back clean", "not malicious") | **none** | **yes** |
+| Failure modes it demonstrates | vocabulary gap (5 findings fall to `other`), negation blindness (E-1003 mislabelled malware), missing category (identity) | the fix for each |
+
+**Why accuracy moves but outcomes mostly don't:** category feeds the score bonus and the recommendation, but the route (auto-close, assign, approve, block) is decided mostly by band and the guardrails. So 5 of 14 findings change category, yet only 1 changes outcome.
+
+---
+
+### How to read this honestly (say it in the room)
+
+1. **The classifier is a keyword stub.** The demo is about the harness: versioned prompts, an eval gate, guardrails, telemetry.
+2. **v2's 100% is measured on the same 14 cases its keywords were written against.** It is effectively a training set. Use it as a regression gate, not as real-world accuracy.
+3. **A weakness both versions share:** E-1007 "Security group open to the world" is Low band and has high confidence, so it auto-closes in v1 *and* v2. v2 labels it correctly but the policy still closes it. A production policy would add "never auto-close exposure on an internet-facing control" or raise the severity mapping. This is a good "what I would harden next" answer.
+4. **Minutes saved and latency are modelled constants**, so the ROI delta between versions (about 779% vs 799%) is illustrative.
+
+---
+
+### Demo script (about 60 seconds, no reset)
+
+1. Mission Control, switch to **v1**, click **Run agent on all (v1)**. Point at 3 auto-closed, 7 assigned.
+2. Open **V1 vs V2 Lab**: accuracy 64.3% vs 100%, "other" bucket 8 vs 4, 5 category changes, 1 outcome change.
+3. Click **Detail** on **E-1003**: v1 says malware (assigned), v2 says benign (auto-closed), with the negation reasoning step.
+4. Back to Mission Control, switch to **v2**, click **Run agent on all (v2)**. Prompt column flips, auto-closed becomes 4, hours saved 3.17.
+5. Open **ROI**: 799%. Close with the honesty block (stub, training set, modelled).
+6. In Salesforce, the same sequence works: Prompt switch, **Run agent on all**, **V1 vs V2 Lab** tab, and the Agent Console commands `triage E-1003 with v1`, `compare E-1003`, `compare all`.
 
 [⬆️ Back to top](#table-of-contents)
 

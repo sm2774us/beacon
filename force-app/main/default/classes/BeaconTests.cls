@@ -110,6 +110,12 @@ private class BeaconTests {
         RestContext.request.requestURI = '/services/apexrest/beacon/api/decision/E-1002/approve';
         BeaconApiRest.doPost();
         System.assertEquals(409, RestContext.response.statusCode);
+        RestContext.request.requestURI = '/services/apexrest/beacon/api/triageall/v1';
+        BeaconApiRest.doPost();
+        System.assertEquals('v1', (String) ((Map<String, Object>) BeaconApiRest.findingView('E-1003').get('run')).get('promptVersion'));
+        RestContext.request.requestURI = '/services/apexrest/beacon/api/triage/E-1003/v2';
+        BeaconApiRest.doPost();
+        System.assertEquals('v2', (String) ((Map<String, Object>) BeaconApiRest.findingView('E-1003').get('run')).get('promptVersion'));
     }
 
     @IsTest

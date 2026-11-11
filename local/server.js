@@ -14,9 +14,13 @@ async function orgRoute(req, res, p) { // live mode: proxy to the Salesforce org
   if (p === '/api/state') return json(res, await sf.call(SF_ORG, 'state'));
   if (p === '/api/compare') return json(res, await sf.call(SF_ORG, 'compare'));
   if (p === '/api/reset' && req.method === 'POST') return json(res, await sf.call(SF_ORG, 'reset', 'POST'));
+  if (p === '/api/run-all' && req.method === 'POST') {
+    const pv = new URL(req.url, 'http://x').searchParams.get('prompt') === 'v1' ? 'v1' : 'v2';
+    await sf.call(SF_ORG, 'triageall/' + pv, 'POST'); return json(res, await sf.call(SF_ORG, 'state'));
+  }
   if ((m = p.match(/^\/api\/findings\/([^/]+)\/run$/)) && req.method === 'POST') {
     const pv = new URL(req.url, 'http://x').searchParams.get('prompt') === 'v1' ? 'v1' : 'v2';
-    const st = await sf.call(SF_ORG, 'triage/' + encodeURIComponent(m[1]) + '?prompt=' + pv, 'POST'); const f = st.findings.find(x => x.id === m[1]);
+    const st = await sf.call(SF_ORG, 'triage/' + encodeURIComponent(m[1]) + '/' + pv, 'POST'); const f = st.findings.find(x => x.id === m[1]);
     return json(res, { run: f && f.run, kpis: st.kpis });
   }
   if ((m = p.match(/^\/api\/findings\/([^/]+)\/(approve|reject)$/)) && req.method === 'POST') {
@@ -34,6 +38,10 @@ http.createServer(async (req, res) => {
   if (p === '/api/state') return json(res, state());
   if (p === '/api/reset' && req.method === 'POST') { store.reset(); return json(res, state()); }
   if (p === '/api/compare') return json(res, store.compare());
+  if (p === '/api/run-all' && req.method === 'POST') {
+    const pv = u.searchParams.get('prompt') === 'v1' ? 'v1' : 'v2';
+    store.get().findings.filter(f => f.status !== 'APPROVED' && f.status !== 'REJECTED').forEach(f => store.run(f.id, pv)); return json(res, state());
+  }
   if (p === '/api/evals') return json(res, store.evaluate(u.searchParams.get('prompt') || 'v2'));
   let m;
   if ((m = p.match(/^\/api\/findings\/([^/]+)\/run$/)) && req.method === 'POST') {

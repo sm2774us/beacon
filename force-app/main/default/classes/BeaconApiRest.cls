@@ -1,7 +1,7 @@
 /**
  * Single source of truth for every UI. GET /services/apexrest/beacon/api/state returns the complete picture
  * (findings + latest run + KPIs + pipeline) in the same JSON shape the local web console uses.
- * POST /beacon/api/triage/{id} | /beacon/api/decision/{id}/{approve|reject} | /beacon/api/reset
+ * POST /beacon/api/triage/{id}[/v1|v2] | /beacon/api/triageall/{v1|v2} | /beacon/api/decision/{id}/{approve|reject} | /beacon/api/reset
  * The LWC Control Tower and the local web console (run-demo-salesforce.bat) both read from here, so they can never disagree.
  */
 @RestResource(urlMapping='/beacon/api/*')
@@ -25,8 +25,11 @@ global with sharing class BeaconApiRest {
         try {
             if (op == 'reset') { BeaconSeed.reset(); }
             else if (op == 'triage' && p.size() > 1) {
-                String ver = RestContext.request.params.get('prompt');
+                String ver = p.size() > 2 ? p[2] : RestContext.request.params.get('prompt');
                 BeaconKpiController.triageByRef(p[1], ver);
+            }
+            else if (op == 'triageall') {
+                BeaconKpiController.triageAll(p.size() > 1 ? p[1] : 'v2', true);
             }
             else if (op == 'decision' && p.size() > 2) { BeaconKpiController.decideByRef(p[1], p[2]); }
             else {

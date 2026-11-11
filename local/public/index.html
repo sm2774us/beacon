@@ -73,8 +73,12 @@ function showTrace(animate){const my=++tok;const f=S.findings.find(x=>x.id==sel)
 const items=r.steps.map(s=>`<div><span class="tool">${s.tool}</span>(${s.input}) <span class="ms">${s.ms}ms</span><br>&rarr; ${s.output}</div>`);
 items.push(`<div><b>Decision:</b> ${pill(r.status)} category <code>${r.category}</code> score <b>${r.score}</b> (${r.band}) confidence <b>${r.confidence}</b><br><b>Owner:</b> ${r.owner}<br><b>Recommendation:</b> ${r.recommendation}<br><small>${r.tokens} est. tokens &middot; ${r.latencyMs} ms &middot; ${r.minutesSaved} analyst-min saved &middot; prompt ${pv(r.promptVersion)}</small></div>`);
 items.forEach((h,i)=>{const go=()=>{if(my===tok)t.appendChild($(h))};animate?setTimeout(go,i*450):go()})}
-async function run(id,ver){if(ver)prompt=ver;sel=id;view='trace';const r=await api(`/api/findings/${id}/run?prompt=${prompt}`,'POST');if(r.error){alert(r.error);return}S=await api('/api/state');last=JSON.stringify(S);render(true)}
-async function runAll(){for(const f of S.findings.filter(x=>x.status!='APPROVED'&&x.status!='REJECTED')){await api(`/api/findings/${f.id}/run?prompt=${prompt}`,'POST')}S=await api('/api/state');last=JSON.stringify(S);render()}
+async function run(id,ver){if(ver)prompt=ver;sel=id;view='trace';let r;try{r=await api(`/api/findings/${id}/run?prompt=${prompt}`,'POST')}catch(e){alert('Run failed: '+e.message);return}if(r.error){alert('Run failed: '+r.error);return}S=await api('/api/state');last=JSON.stringify(S);render(true)}
+let busy=false;
+async function runAll(){if(busy)return;busy=true;const btns=[...document.querySelectorAll('button.b')];btns.forEach(x=>x.disabled=true);
+ try{const n=await api(`/api/run-all?prompt=${prompt}`,'POST');if(n.error)throw new Error(n.error);S=n;last=JSON.stringify(S);view='trace'}
+ catch(e){alert('Run agent on all failed: '+e.message)}
+ finally{busy=false;render()}}
 const bar=(a,b,max,fmtv)=>`<div class="sm"><span class="v1c">v1 ${fmtv(a)}</span></div><div class="cmpbar"><i style="width:${Math.min(100,a/max*100)}%;background:var(--amb)"></i></div><div class="sm"><span class="v2c">v2 ${fmtv(b)}</span></div><div class="cmpbar"><i style="width:${Math.min(100,b/max*100)}%;background:var(--grn)"></i></div>`;
 async function lab(){await ensureCmp();const m=document.getElementById('main');if(tab!=1)return;const s=CMP.summary,a=s.v1,b=s.v2,p=x=>x+'%',n=x=>x;
 const tile=(t,x,y,fm,max,good)=>`<div class="card"><h2 class="sm mut">${t}</h2>${bar(x,y,max,fm)}</div>`;
