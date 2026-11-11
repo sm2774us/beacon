@@ -31,6 +31,8 @@
   - 16.5. [How to read this honestly (say it in the room)](#how-to-read-this-honestly-say-it-in-the-room)
   - 16.6. [Demo script (about 60 seconds, no reset)](#demo-script-about-60-seconds-no-reset)
 17. [Glossary of terms and acronyms](#glossary)
+18. [Beacon Salesforce data model (ER diagram)](#beacon-salesforce-data-model-er-diagram)
+19. [FDE Workflow](#fde-workflow)
 
 [⬆️ Back to top](#table-of-contents)
 
@@ -2101,6 +2103,98 @@ Terms are alphabetical. Links from the text land here.
 
 **W**
 - <a id="g-webhook"></a>**Webhook** - a message one system sends to another when an event happens; retries cause duplicates.
+
+[⬆️ Back to top](#table-of-contents)
+
+---
+
+## Beacon Salesforce data model (ER diagram)
+
+Source: `force-app/main/default/objects` (five custom objects, all in the Beacon SFDX project). `Finding__c` is the unit of work; `Agent_Run__c` is its telemetry; `Ingest_Batch__c` stands alone.
+
+```mermaid
+erDiagram
+    Control__c ||--o{ Finding__c : "Control__c (Lookup, SetNull)"
+    Asset__c ||--o{ Finding__c : "Asset__c (Lookup, SetNull)"
+    Finding__c ||--o{ Agent_Run__c : "Finding__c (Lookup, SetNull)"
+
+    Control__c {
+        Text Name
+        Text Control_Code__c "External Id"
+        Picklist Framework__c "SOC2 / ISO27001 / NIST CSF"
+        Number Criticality__c
+        Text Owner_Team__c
+    }
+    Asset__c {
+        Text Name
+        Number Tier__c "1 = most important"
+        Checkbox Contains_PII__c
+        Checkbox Internet_Facing__c
+    }
+    Finding__c {
+        Text External_Id__c "External Id, upsert key"
+        Text Title__c
+        LongText Description__c
+        Picklist Severity__c "Low / Medium / High / Critical"
+        Picklist Source__c "Splunk / CloudTrail / ServiceNow / Archer"
+        Picklist Status__c "New / Auto-Closed / Assigned / Pending Approval / Blocked / Approved / Rejected"
+        Lookup Control__c FK
+        Lookup Asset__c FK
+        Text Control_Ref__c
+        Text Asset_Ref__c
+        Number Risk_Score__c
+        Text Risk_Band__c
+        Text Category__c
+        Number Confidence__c
+        Checkbox Requires_Approval__c
+        LongText Agent_Recommendation__c
+    }
+    Agent_Run__c {
+        Lookup Finding__c FK
+        Text Outcome__c
+        Text Prompt_Version__c "v1 or v2"
+        Text Guardrails_Triggered__c
+        Number Latency_Ms__c
+        Number Tokens__c
+        Number Minutes_Saved__c
+    }
+    Ingest_Batch__c {
+        Number Received__c "18 in the demo"
+        Number Accepted__c "14"
+        Number Quarantined__c "4"
+        LongText Reasons__c
+        LongText Quarantine_Detail__c
+    }
+```
+
+### Relationships
+
+| Parent | Child | Field | Type | On parent delete | Cardinality |
+|---|---|---|---|---|---|
+| `Control__c` | `Finding__c` | `Control__c` | Lookup | SetNull | 1 control : many findings |
+| `Asset__c` | `Finding__c` | `Asset__c` | Lookup | SetNull | 1 asset : many findings |
+| `Finding__c` | `Agent_Run__c` | `Finding__c` | Lookup | SetNull | 1 finding : many runs allowed; Beacon keeps **one current run per finding** (a re-run with the other prompt version replaces it) |
+| none | `Ingest_Batch__c` | n/a | n/a | n/a | Standalone counter row: received, accepted, quarantined, reasons |
+
+### Design notes (say these if asked)
+
+- **Idempotent ingest:** `Finding__c.External_Id__c` is the upsert key, so retries and duplicate feeds cannot create duplicates. `Control__c.Control_Code__c` is the external id for controls.
+- **Lookup, not Master-Detail:** findings must survive if an asset or control is removed, and run telemetry must keep its audit history. SetNull on delete keeps records and clears the link.
+- **Text refs beside lookups:** `Control_Ref__c` and `Asset_Ref__c` hold the source event's text references next to the resolved lookups.
+- **Where the decision lives:** `Risk_Score__c`, `Risk_Band__c`, `Category__c`, `Confidence__c`, `Status__c` and `Requires_Approval__c` are the agent's outputs on the finding. `Agent_Run__c` records how it got there (prompt version, guardrails, latency, tokens, minutes saved) and feeds the KPI dashboard and ROI view.
+- **Quarantine:** bad records are counted and explained in `Ingest_Batch__c` (`Reasons__c`, `Quarantine_Detail__c`) rather than written as findings.
+- **Security:** Apex uses `with sharing`, `WITH USER_MODE` queries and `as user` DML, and the `Beacon_FDE_Demo` permission set grants access to these five objects.
+- **If a panelist asks about scale:** index on `External_Id__c` and `Control_Code__c` is automatic for external ids; for large volumes I would archive old `Agent_Run__c` rows and use Big Objects or Data 360 for history. That is a design, not something Beacon does today.
+
+[⬆️ Back to top](#table-of-contents)
+
+---
+
+## FDE Workflow
+
+![FDE - Field Execution Loop](./images/FDE_Field_Execution_Loop.png)
+
+![FDE - System Design](./images/FDE_System_Design_What_To_Know.jpg)
 
 [⬆️ Back to top](#table-of-contents)
 
